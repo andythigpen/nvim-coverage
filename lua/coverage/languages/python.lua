@@ -1,5 +1,8 @@
 local M = {}
 
+local config = require("coverage.config")
+local signs = require("coverage.signs")
+
 local is_pipenv = function()
 	return vim.fn.filereadable("Pipfile") ~= 0
 end
@@ -34,36 +37,36 @@ M.generate_report = function(callback)
 	})
 end
 
-M.sign_list = function(group, json_data)
-	local signs = {}
+--- Returns a list of signs to be placed.
+-- @param json_data from the generated report
+M.sign_list = function(json_data)
+	local group = config.opts.sign_group
+	local sign_list = {}
 	for fname, cov in pairs(json_data.files) do
 		local buffer = vim.fn.bufnr(fname, false)
 		if buffer ~= -1 then
 			for _, lnum in ipairs(cov.executed_lines) do
-				table.insert(signs, {
+				table.insert(sign_list, {
 					buffer = buffer,
 					group = group,
 					lnum = lnum,
-					name = "coverage_covered", -- TODO: use helper method
-					-- TODO: prioritiy
+					name = signs.name("covered"),
+					priority = config.opts.signs.covered.priority or 10,
 				})
 			end
 
 			for _, lnum in ipairs(cov.missing_lines) do
-				table.insert(signs, {
+				table.insert(sign_list, {
 					buffer = buffer,
 					group = group,
 					lnum = lnum,
-					name = "coverage_uncovered", -- TODO: use helper method
-					-- TODO: prioritiy
+					name = signs.name("uncovered"),
+					priority = config.opts.signs.uncovered.priority or 10,
 				})
 			end
 		end
-		P(fname)
-		P(cov)
 	end
-	P(signs)
-	return signs
+	return sign_list
 end
 
 return M
