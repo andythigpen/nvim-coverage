@@ -3,6 +3,7 @@ local M = {
 }
 
 local defaults = {
+	commands = true,
 	highlights = {
 		covered = { fg = "#C3E88D" },
 		uncovered = { fg = "#F07178" },

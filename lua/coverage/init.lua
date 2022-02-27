@@ -11,6 +11,15 @@ M.setup = function(user_opts)
 	config.setup(user_opts)
 	signs.setup()
 	highlight.setup()
+
+	-- add commands
+	if config.opts.commands then
+		vim.cmd([[
+    command Coverage lua require('coverage').generate()
+    command CoverageToggle lua require('coverage').toggle()
+    command CoverageClear lua require('coverage').clear()
+    ]])
+	end
 end
 
 --- Generates a report and places signs.
