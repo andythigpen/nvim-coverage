@@ -3,6 +3,7 @@ local M = {}
 local Path = require("plenary.path")
 local config = require("coverage.config")
 local signs = require("coverage.signs")
+local util = require("coverage.util")
 
 --- Returns a list of signs to be placed.
 -- @param json_data from the generated report
@@ -34,11 +35,11 @@ M.generate = function(callback)
 	local ruby_config = config.opts.lang.ruby
 	local p = Path:new(ruby_config.coverage_file)
 	if not p:exists() then
+		vim.notify("No coverage file exists.", vim.log.levels.INFO)
 		return
 	end
 	p:read(vim.schedule_wrap(function(data)
-		local json_data = vim.fn.json_decode(data)
-		callback(sign_list(json_data))
+		util.safe_decode(data, util.chain(callback, sign_list))
 	end))
 end
 
