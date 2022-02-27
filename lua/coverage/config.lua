@@ -12,6 +12,14 @@ local defaults = {
 		uncovered = { hl = "CoverageUncovered", text = "▎" },
 	},
 	sign_group = "coverage",
+	lang = {
+		python = {
+			coverage_command = "coverage json -q -o -",
+		},
+		ruby = {
+			coverage_file = "coverage/coverage.json",
+		},
+	},
 }
 
 --- Setup configuration values.

@@ -7,10 +7,30 @@ local is_pipenv = function()
 	return vim.fn.filereadable("Pipfile") ~= 0
 end
 
+--- Returns a list of signs to be placed.
+-- @param json_data from the generated report
+local sign_list = function(json_data)
+	local sign_list = {}
+	for fname, cov in pairs(json_data.files) do
+		local buffer = vim.fn.bufnr(fname, false)
+		if buffer ~= -1 then
+			for _, lnum in ipairs(cov.executed_lines) do
+				table.insert(sign_list, signs.new_covered(buffer, lnum))
+			end
+
+			for _, lnum in ipairs(cov.missing_lines) do
+				table.insert(sign_list, signs.new_uncovered(buffer, lnum))
+			end
+		end
+	end
+	return sign_list
+end
+
 --- Generates a coverage report.
--- @param callback called with the decoded JSON coverage report when complete
-M.generate_report = function(callback)
-	local cmd = "coverage json -q -o -"
+-- @param callback called with the list of signs from the coverage report
+M.generate = function(callback)
+	local python_config = config.opts.lang.python
+	local cmd = python_config.coverage_command
 	if is_pipenv() then
 		cmd = "pipenv run " .. cmd
 	end
@@ -32,41 +52,10 @@ M.generate_report = function(callback)
 				vim.notify(stderr, vim.log.levels.ERROR)
 				return
 			end
-			callback(vim.fn.json_decode(stdout))
+			local json_data = vim.fn.json_decode(stdout)
+			callback(sign_list(json_data))
 		end),
 	})
-end
-
---- Returns a list of signs to be placed.
--- @param json_data from the generated report
-M.sign_list = function(json_data)
-	local group = config.opts.sign_group
-	local sign_list = {}
-	for fname, cov in pairs(json_data.files) do
-		local buffer = vim.fn.bufnr(fname, false)
-		if buffer ~= -1 then
-			for _, lnum in ipairs(cov.executed_lines) do
-				table.insert(sign_list, {
-					buffer = buffer,
-					group = group,
-					lnum = lnum,
-					name = signs.name("covered"),
-					priority = config.opts.signs.covered.priority or 10,
-				})
-			end
-
-			for _, lnum in ipairs(cov.missing_lines) do
-				table.insert(sign_list, {
-					buffer = buffer,
-					group = group,
-					lnum = lnum,
-					name = signs.name("uncovered"),
-					priority = config.opts.signs.uncovered.priority or 10,
-				})
-			end
-		end
-	end
-	return sign_list
 end
 
 return M

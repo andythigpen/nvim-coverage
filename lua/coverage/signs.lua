@@ -1,5 +1,4 @@
 local M = {}
-
 local config = require("coverage.config")
 
 local ns = "coverage_"
@@ -56,6 +55,30 @@ end
 M.clear = function()
 	M.unplace()
 	cached_signs = nil
+end
+
+--- Returns a new covered sign in the format used by sign_placelist.
+-- @return sign
+M.new_covered = function(buffer, lnum)
+	return {
+		buffer = buffer,
+		group = config.opts.sign_group,
+		lnum = lnum,
+		name = M.name("covered"),
+		priority = config.opts.signs.covered.priority or 10,
+	}
+end
+
+--- Returns a new uncovered sign in the format used by sign_placelist.
+-- @return sign
+M.new_uncovered = function(buffer, lnum)
+	return {
+		buffer = buffer,
+		group = config.opts.sign_group,
+		lnum = lnum,
+		name = M.name("uncovered"),
+		priority = config.opts.signs.covered.priority or 10,
+	}
 end
 
 return M

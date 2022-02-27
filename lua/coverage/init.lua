@@ -14,7 +14,7 @@ M.setup = function(user_opts)
 end
 
 --- Generates a report and places signs.
-M.generate_report = function()
+M.generate = function()
 	local ftype = vim.bo.filetype
 
 	local ok, lang = pcall(require, "coverage.languages." .. ftype)
@@ -23,10 +23,7 @@ M.generate_report = function()
 		return
 	end
 
-	lang.generate_report(function(json_data)
-		local results = lang.sign_list(config.opts.sign_group, json_data)
-		signs.place(results)
-	end)
+	lang.generate(signs.place)
 end
 
 --- Toggles signs.
