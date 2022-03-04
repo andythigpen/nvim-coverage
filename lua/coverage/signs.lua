@@ -42,6 +42,14 @@ M.is_enabled = function()
 	return enabled
 end
 
+--- Displays cached signs.
+M.show = function()
+	if enabled or cached_signs == nil then
+		return
+	end
+	M.place(cached_signs)
+end
+
 --- Toggles the visibility of coverage signs.
 M.toggle = function()
 	if enabled then

@@ -15,7 +15,7 @@ local defaults = {
 	sign_group = "coverage",
 	lang = {
 		python = {
-			data_file = ".coverage",
+			coverage_file = ".coverage",
 			coverage_command = "coverage json -q -o -",
 		},
 		ruby = {

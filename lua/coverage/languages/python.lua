@@ -28,11 +28,11 @@ local sign_list = function(json_data)
 	return sign_list
 end
 
---- Generates a coverage report.
+--- Loads a coverage report.
 -- @param callback called with the list of signs from the coverage report
-M.generate = function(callback)
+M.load = function(callback)
 	local python_config = config.opts.lang.python
-	local p = Path:new(python_config.data_file)
+	local p = Path:new(python_config.coverage_file)
 	if not p:exists() then
 		vim.notify("No coverage data file exists.", vim.log.levels.INFO)
 		return

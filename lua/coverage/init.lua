@@ -15,15 +15,17 @@ M.setup = function(user_opts)
 	-- add commands
 	if config.opts.commands then
 		vim.cmd([[
-    command Coverage lua require('coverage').generate()
+    command Coverage lua require('coverage').load()
+    command CoverageShow lua require('coverage').show()
+    command CoverageHide lua require('coverage').hide()
     command CoverageToggle lua require('coverage').toggle()
     command CoverageClear lua require('coverage').clear()
     ]])
 	end
 end
 
---- Generates a report and places signs.
-M.generate = function()
+--- Loads a coverage report and places signs.
+M.load = function()
 	local ftype = vim.bo.filetype
 
 	local ok, lang = pcall(require, "coverage.languages." .. ftype)
@@ -32,13 +34,20 @@ M.generate = function()
 		return
 	end
 
-	lang.generate(signs.place)
+	signs.clear()
+	lang.load(signs.place)
 end
+
+-- Shows signs, if loaded.
+M.show = signs.show
+
+-- Hides signs.
+M.hide = signs.unplace
 
 --- Toggles signs.
 M.toggle = signs.toggle
 
---- Clears all signs.
+--- Hides and clears cached signs.
 M.clear = signs.clear
 
 return M

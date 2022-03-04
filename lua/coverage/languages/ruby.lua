@@ -12,10 +12,10 @@ local sign_list = function(json_data)
 	for fname, cov in pairs(json_data.coverage) do
 		local p = Path:new(fname)
 		local buffer = vim.fn.bufnr(p:make_relative(), false)
-		if buffer ~= 1 then
+		if buffer ~= -1 then
 			for linenr, status in ipairs(cov.lines) do
 				local s = nil
-				if status == 1 then
+				if status ~= nil and status ~= vim.NIL and status >= 1 then
 					s = signs.new_covered(buffer, linenr)
 				elseif status == 0 then
 					s = signs.new_uncovered(buffer, linenr)
@@ -29,9 +29,9 @@ local sign_list = function(json_data)
 	return sign_list
 end
 
---- Generates a coverage report.
+--- Loads a coverage report.
 -- @param callback called with the list of signs from the coverage report
-M.generate = function(callback)
+M.load = function(callback)
 	local ruby_config = config.opts.lang.ruby
 	local p = Path:new(ruby_config.coverage_file)
 	if not p:exists() then
