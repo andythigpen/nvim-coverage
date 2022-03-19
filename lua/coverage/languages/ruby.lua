@@ -7,7 +7,7 @@ local util = require("coverage.util")
 
 --- Returns a list of signs to be placed.
 -- @param json_data from the generated report
-local sign_list = function(json_data)
+M.sign_list = function(json_data)
 	local sign_list = {}
 	for fname, cov in pairs(json_data.coverage) do
 		local p = Path:new(fname)
@@ -39,8 +39,47 @@ M.load = function(callback)
 		return
 	end
 	p:read(vim.schedule_wrap(function(data)
-		util.safe_decode(data, util.chain(callback, sign_list))
+		util.safe_decode(data, callback)
 	end))
+end
+
+--- Returns a summary report.
+M.summary = function(json_data)
+	local totals = {
+		statements = 0,
+		missing = 0,
+		excluded = nil, -- simplecov JSON report doesn't have this information
+		branches = nil,
+		partial = nil,
+		coverage = 0,
+	}
+	local files = {}
+	for fname, cov in pairs(json_data.coverage) do
+		local statements = 0
+		local missing = 0
+		for _, status in ipairs(cov.lines) do
+			totals.statements = totals.statements + 1
+			statements = statements + 1
+			if status == 0 then
+				totals.missing = totals.missing + 1
+				missing = missing + 1
+			end
+		end
+		table.insert(files, {
+			filename = fname,
+			statements = statements,
+			missing = missing,
+			excluded = nil, -- simplecov JSON report doesn't have this information
+			branches = nil,
+			partial = nil,
+			coverage = statements / missing,
+		})
+	end
+	totals.coverage = totals.statements / totals.missing
+	return {
+		files = files,
+		totals = totals,
+	}
 end
 
 return M

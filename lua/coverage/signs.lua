@@ -23,6 +23,13 @@ M.name = function(name)
 	return ns .. name
 end
 
+--- Caches signs but does not place them.
+-- @param signs list (reference sign_placelist)
+M.cache = function(signs)
+	M.unplace()
+	cached_signs = signs
+end
+
 --- Places a list of signs
 -- @param signs list (reference sign_placelist)
 M.place = function(signs)

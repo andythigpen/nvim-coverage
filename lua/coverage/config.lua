@@ -7,12 +7,34 @@ local defaults = {
 	highlights = {
 		covered = { fg = "#C3E88D" },
 		uncovered = { fg = "#F07178" },
+		summary_border = { link = "FloatBorder" },
+		summary_normal = { link = "NormalFloat" },
+		summary_cursor_line = { link = "CursorLine" },
+		summary_header = { style = "bold,underline" },
+		summary_pass = { link = "CoverageCovered" },
+		summary_fail = { link = "CoverageUncovered" },
 	},
 	signs = {
 		covered = { hl = "CoverageCovered", text = "▎" },
 		uncovered = { hl = "CoverageUncovered", text = "▎" },
 	},
 	sign_group = "coverage",
+	summary = {
+		width_percentage = 0.70,
+		height_percentage = 0.50,
+		borders = {
+			topleft = "╭",
+			topright = "╮",
+			top = "─",
+			left = "│",
+			right = "│",
+			botleft = "╰",
+			botright = "╯",
+			bot = "─",
+			highlight = "Normal:CoverageSummaryBorder",
+		},
+		min_coverage = 80.0,
+	},
 	lang = {
 		python = {
 			coverage_file = ".coverage",
