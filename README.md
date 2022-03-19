@@ -2,6 +2,12 @@
 
 Display coverage information in the sign column.
 
+![markers](https://user-images.githubusercontent.com/542263/159128715-32e6eddf-5f9f-4853-9e2b-abd66bbf01d4.png)
+
+A summary pop-up window displays a coverage report.
+
+![summary](https://user-images.githubusercontent.com/542263/159128732-8189b89d-4f71-4a34-8c6a-176e40fcd48d.png)
+
 Currently supports:
 
 - Python: [coverage.py](https://coverage.readthedocs.io/en/6.3.2/index.html)
@@ -34,7 +40,7 @@ require("coverage").setup({
 		summary_border = { link = "FloatBorder" },
 		summary_normal = { link = "NormalFloat" },
 		summary_cursor_line = { link = "CursorLine" },
-		summary_header = { style = "bold,underline" },
+		summary_header = { style = "bold,underline", sp = "bg" },
 		summary_pass = { link = "CoverageCovered" },
 		summary_fail = { link = "CoverageUncovered" },
 	},
@@ -88,7 +94,7 @@ M.load = function(callback)
   -- TODO: callback(results)
 end
 
---- Returns a list of sings that will be placed in buffers.
+--- Returns a list of signs that will be placed in buffers.
 -- This method should use the coverage data (previously generated via the load method) to 
 -- return a list of signs.
 -- @return list of signs

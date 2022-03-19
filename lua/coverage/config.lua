@@ -10,7 +10,7 @@ local defaults = {
 		summary_border = { link = "FloatBorder" },
 		summary_normal = { link = "NormalFloat" },
 		summary_cursor_line = { link = "CursorLine" },
-		summary_header = { style = "bold,underline" },
+		summary_header = { style = "bold,underline", sp = "fg" },
 		summary_pass = { link = "CoverageCovered" },
 		summary_fail = { link = "CoverageUncovered" },
 	},

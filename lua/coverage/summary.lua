@@ -17,14 +17,17 @@ local popup = nil
 -- cached summary report
 local summary = nil
 -- cached header
-local header = { lines = {}, highlights = {} }
+local header = nil
 -- cached content (data for files in the report)
-local content = { lines = {}, highlights = {} }
+local content = nil
 -- cached footer
-local footer = { lines = {}, highlights = {} }
+local footer = nil
 -- help screen toggle
 local help_displayed = false
 local cached_filename_width = nil
+local fixed_col_width = 64 -- this should match the width of header columns below
+local min_filename_width = 25 -- the filename column should be at least this wide
+local max_col_width = 99 -- string.format doesn't like values larger than this
 
 -- Sort file coverage ascending.
 local coverage_ascending = function(a, b)
@@ -70,15 +73,14 @@ local get_filename_width = function()
 		return cached_filename_width
 	end
 
-	local fixed_col_width = 64 -- this should match the width of columns below
 	local win_width = vim.api.nvim_win_get_width(popup.win_id)
 
-	local filename_width = 25
+	local filename_width = min_filename_width
 	for _, file in ipairs(summary.files) do
 		filename_width = vim.fn.max({ filename_width, string.len(file.filename) + 1 })
 	end
 	-- cap it at the smallest possible to fit in the window (max 99)
-	filename_width = vim.fn.min({ filename_width, win_width - fixed_col_width, 99 })
+	filename_width = vim.fn.min({ filename_width, win_width - fixed_col_width, max_col_width })
 	cached_filename_width = filename_width
 	return filename_width
 end
@@ -256,20 +258,8 @@ end
 
 --- Inserts keymaps into the popup buffer.
 local keymaps = function()
-	vim.api.nvim_buf_set_keymap(
-		popup.bufnr,
-		"n",
-		"q",
-		":lua require('coverage.summary').close()<CR>",
-		{ silent = true }
-	)
-	vim.api.nvim_buf_set_keymap(
-		popup.bufnr,
-		"n",
-		"<Esc>",
-		":lua require('coverage.summary').close()<CR>",
-		{ silent = true }
-	)
+	vim.api.nvim_buf_set_keymap(popup.bufnr, "n", "q", ":" .. popup.bufnr .. "bwipeout!<CR>", { silent = true })
+	vim.api.nvim_buf_set_keymap(popup.bufnr, "n", "<Esc>", ":" .. popup.bufnr .. "bwipeout!<CR>", { silent = true })
 	vim.api.nvim_buf_set_keymap(
 		popup.bufnr,
 		"n",
@@ -318,6 +308,12 @@ local set_options = function()
 		"winhl",
 		"Normal:CoverageSummaryNormal,CursorLine:CoverageSummaryCursorLine"
 	)
+	vim.cmd(string.format(
+		[[
+    au BufLeave <buffer=%d> lua require('coverage.summary').close()
+    ]],
+		popup.bufnr
+	))
 end
 
 --- Opens the file under the cursor and closes the popup.
@@ -356,6 +352,18 @@ M.toggle_help = function()
 	end
 end
 
+--- Try to adjust the width percentage to help on smaller screens.
+local adjust_width_percentage = function(width_percentage)
+	local term_width = vim.o.columns
+	local min_table_width = fixed_col_width + min_filename_width
+	if term_width <= min_table_width + 20 then
+		width_percentage = 1.0
+	elseif term_width <= min_table_width + 40 then
+		width_percentage = 0.9
+	end
+	return width_percentage
+end
+
 --- Display the coverage report summary popup.
 M.show = function()
 	if not report.is_cached() then
@@ -376,7 +384,7 @@ M.show = function()
 	end
 
 	popup = window.percentage_range_window(
-		config.opts.summary.width_percentage,
+		adjust_width_percentage(config.opts.summary.width_percentage),
 		config.opts.summary.height_percentage,
 		{},
 		border_opts
@@ -405,6 +413,20 @@ M.close = function()
 		return
 	end
 	vim.api.nvim_buf_delete(popup.bufnr, { force = true })
+	M.win_on_close()
+end
+
+--- Clear variables on window close.
+M.win_on_close = function()
+	if popup == nil then
+		return
+	end
+	cached_filename_width = nil
+	summary = nil
+	header = nil
+	content = nil
+	footer = nil
+	help_displayed = false
 	popup = nil
 end
 
