@@ -72,10 +72,10 @@ M.summary = function(json_data)
 			excluded = nil, -- simplecov JSON report doesn't have this information
 			branches = nil,
 			partial = nil,
-			coverage = statements / missing,
+			coverage = ((statements - missing) / statements) * 100.0,
 		})
 	end
-	totals.coverage = totals.statements / totals.missing
+	totals.coverage = ((totals.statements - totals.missing) / totals.statements) * 100.0
 	return {
 		files = files,
 		totals = totals,

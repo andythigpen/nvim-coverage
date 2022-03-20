@@ -243,6 +243,7 @@ local render_help = function()
 		" Keyboard shortcuts",
 		"",
 		" Toggle help                 ?",
+		" Jump to top entry           H",
 		" Sort coverage ascending     s",
 		" Sort coverage descending    S",
 		" Open selected file          <CR>",
@@ -260,6 +261,7 @@ end
 local keymaps = function()
 	vim.api.nvim_buf_set_keymap(popup.bufnr, "n", "q", ":" .. popup.bufnr .. "bwipeout!<CR>", { silent = true })
 	vim.api.nvim_buf_set_keymap(popup.bufnr, "n", "<Esc>", ":" .. popup.bufnr .. "bwipeout!<CR>", { silent = true })
+	vim.api.nvim_buf_set_keymap(popup.bufnr, "n", "H", ":" .. #header.lines + 1 .. "<CR>", { silent = true })
 	vim.api.nvim_buf_set_keymap(
 		popup.bufnr,
 		"n",
@@ -335,6 +337,7 @@ M.select_item = function()
 	local bufnr = get_bufnr(fname)
 	if bufnr == -1 then
 		vim.cmd("edit " .. fname)
+		require("coverage").load(true)
 	else
 		vim.api.nvim_win_set_buf(0, bufnr)
 	end

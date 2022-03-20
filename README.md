@@ -1,10 +1,10 @@
 # nvim-coverage
 
-Display coverage information in the sign column.
+Displays coverage information in the sign column.
 
 ![markers](https://user-images.githubusercontent.com/542263/159128715-32e6eddf-5f9f-4853-9e2b-abd66bbf01d4.png)
 
-A summary pop-up window displays a coverage report.
+Displays a coverage summary report in a pop-up window.
 
 ![summary](https://user-images.githubusercontent.com/542263/159128732-8189b89d-4f71-4a34-8c6a-176e40fcd48d.png)
 
@@ -12,6 +12,7 @@ Currently supports:
 
 - Python: [coverage.py](https://coverage.readthedocs.io/en/6.3.2/index.html)
 - Ruby: [SimpleCov](https://github.com/simplecov-ruby/simplecov)
+- Rust: [grcov](https://github.com/mozilla/grcov#usage)
 
 ## Installation
 
@@ -72,6 +73,12 @@ require("coverage").setup({
 		},
 		ruby = {
 			coverage_file = "coverage/coverage.json",   -- coverage is read from this file
+		},
+		rust = {
+			-- source dir will be set based on vim cwd
+			coverage_command = "grcov ${cwd} -s ${cwd} --binary-path ./target/debug/ -t coveralls --branch --ignore-not-existing --token NO_TOKEN",
+			project_files_only = true,                  -- only display project files if true
+			project_files = { "src/*", "tests/*" },     -- list of patterns used to filter the report when project_files_only is true
 		},
 	},
 })
