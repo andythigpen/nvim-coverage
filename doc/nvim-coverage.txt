@@ -1,0 +1,210 @@
+================================================================================
+INTRODUCTION                                                   *nvim-coverage*
+
+nvim-coverage is a plugin for displaying test coverage data in neovim.
+
+  1. Setup...............................................|nvim-coverage-setup|
+  2. Language specific setup........................|nvim-coverage-lang-setup|
+  3. Commands.........................................|nvim-coverage-commands|
+  4. Lua API...............................................|nvim-coverage-lua|
+
+================================================================================
+SETUP                                                    *nvim-coverage-setup*
+
+                                                            *coverage.setup()*
+coverage.setup({opts})
+    Initial setup function. Must be called by the user to enable the plugin.
+
+    Usage: >
+    
+    require('coverage').setup({
+      -- configuration options here
+      highlights = {
+        -- customize highlights
+      },
+      signs = {
+        -- customize signs
+      },
+      summary = {
+        -- customize summary pop-up
+      },
+      lang = {
+        -- customize langauge specific settings
+      }
+    })
+<
+
+Valid keys for {opts}:
+
+    commands: ~
+        If true, create commands. See |nvim-coverage-commands|.
+        Defaults to: `true`
+    sign_group: ~
+        Name of the sign group used when placing the signs. See |sign-group|.
+        Defaults to: `coverage`
+
+                                                         *coverage.highlights*
+Valid keys for {opts.highlights}:
+
+    Each highlight group supports the following keys:
+
+    'fg': Customize the foreground color. See |highlight-guifg|.
+    'bg': Customize the background color. See |highlight-guibg|.
+    'sp': Customize the special color. See |highlight-guisp|.
+    'link': Link the highlight group. See |:highlight-link|.
+
+    covered: ~
+        Customize the highlight group for covered signs.
+        Defaults to: `{ fg = "#C3E88D" }`
+    uncovered: ~
+        Customize the highlight group for uncovered signs.
+        Defaults to: `{ fg = "#F07178" }`
+    summary_border: ~
+        Customize the border highlight group of the summary pop-up.
+        Defaults to: `{ link = "FloatBorder" }`
+    summary_normal: ~
+        Customize the normal text highlight group of the summary pop-up.
+        Defaults to: `{ link = "NormalFloat" }`
+    summary_cursor_line: ~
+        Customize the cursor line highlight group of the summary pop-up.
+        Defaults to: `{ link = "CursorLine" }`
+    summary_header: ~
+        Customize the header text highlight group of the summary pop-up.
+        Defaults to: `{ style = "bold,underline", sp = "bg" }`
+    summary_pass: ~
+        Customize the pass text highlight group of the summary pop-up.
+        Defaults to: `{ link = "CoverageCovered" }`
+    summary_fail: ~
+        Customize the fail text highlight group of the summary pop-up.
+        Defaults to: `{ link = "CoverageUncovered" }`
+
+                                                              *coverage.signs*
+Valid keys for {opts.signs}:
+
+    covered: ~
+        Customize the highlight group and text used for covered signs.
+        Defaults to: `{ hl = "CoverageCovered", text = "▎" }`
+    uncovered: ~
+        Customize the highlight group and text used for uncovered signs.
+        Defaults to: `{ hl = "CoverageUncovered", text = "▎" }`
+
+                                                            *coverage.summary*
+Valid keys for {opts.summary}:
+
+    width_percentage: ~
+        Width of the pop-up window (0 < value <= 1.0)
+        Defaults to: `0.75`
+    height_percentage: ~
+        Height of the pop-up window (0 < value <= 1.0)
+        Defaults to: `0.50`
+    borders: ~
+        Customize the borders (see plenary window API)
+    min_coverage: ~
+        Minimum coverage percentage (0 < value <= 100.0).
+        Values below this are highlighted with the fail group, values above
+        are highlighted with the pass group.
+        Defaults to: `80.0`
+
+                                                               *coverage.lang*
+Valid keys for {opts.lang}:
+
+    Each key corresponds with the |filetype| of the language and maps to a
+    table of configuration values that differ. See below for language specific
+    options.
+
+
+================================================================================
+LANGUANGE SPECIFIC SETUP                            *nvim-coverage-lang-setup*
+
+                                                        *nvim-coverage-python*
+Python (coverage.py) supports the following configuration options:
+
+    coverage_file: ~
+        File that the plugin will try to read coverage from.
+        Defaults to: `".coverage"`
+    coverage_command: ~
+        This command runs to load the coverage in coverage_file and output a
+        JSON report to stdout.
+        Defaults to: `"coverage json -q -o -"`
+
+                                                          *nvim-coverage-ruby*
+Ruby (simplecov) supports the following configuration options:
+
+    coverage_file: ~
+        File that the plugin will try to read coverage from.
+        Defaults to: `"coverage/coverage.json"`
+
+                                                          *nvim-coverage-rust*
+Rust (grcov) supports the following configuration options:
+
+    coverage_command: ~
+        This command runs to load the coverage and output a JSON report to
+        stdout.
+        The values `${cwd}` are replaced by the plugin with the current
+        working directory before the command is run.
+        Defaults to: `"grcov ${cwd} -s ${cwd} --binary-path ./target/debug/ -t coveralls --branch --ignore-not-existing --token NO_TOKEN"`
+    project_files_only: ~
+        By default, grcov outputs coverage for all crates. When true, this
+        option will add additional filters to `coverage_command` to filter for
+        only local files.
+        Defaults to: `true`
+    project_files: ~
+        When `project_files_only` is true, these filters are added to
+        `coverage_command`.
+        Defaults to: `{ "src/*", "tests/*" }`
+    
+
+================================================================================
+COMMANDS                                              *nvim-coverage-commands*
+
+The following commands are available (when configured):
+
+:Coverage                                                          *:Coverage*
+    Loads a coverage report and immediately displays the coverage signs.
+
+:CoverageLoad                                                  *:CoverageLoad*
+    Loads a coverage report but does not display the coverage signs.
+
+:CoverageShow                                                  *:CoverageShow*
+    Shows the coverage signs. Must call |:Coverage| or |:CoverageLoad| first.
+
+:CoverageHide                                                  *:CoverageHide*
+    Hides the coverage signs. Must call |:Coverage| or |:CoverageLoad| first.
+
+:CoverageToggle                                              *:CoverageToggle*
+    Toggles the coverage signs. Must call |:Coverage| or |:CoverageLoad| first.
+
+:CoverageClear                                                *:CoverageClear*
+    Unloads the cached coverage signs. |:Coverage| or |:CoverageLoad| must be
+    called again to reload the data.
+
+:CoverageSummary                                            *:CoverageSummary*
+    Displays a coverage summary report in a floating window.
+
+
+================================================================================
+LUA API                                                    *nvim-coverage-lua*
+
+                                                             *coverage.load()*
+coverage.load({place})
+    Loads a coverage report. When {place} is true, also place the signs in the
+    sign column.
+
+                                                             *coverage.show()*
+coverage.show()
+    Shows coverage signs in sign column, if coverage has already been loaded.
+
+                                                             *coverage.hide()*
+coverage.hide()
+    Hides coverage signs in the sign column.
+
+                                                           *coverage.toggle()*
+coverage.toggle()
+    Toggles coverage signs (must already be loaded).
+
+                                                          *coverage.summary()*
+coverage.summary()
+    Displays a coverage summary report in a pop-up window.
+
+
+ vim:tw=78:ts=8:ft=help:norl:
