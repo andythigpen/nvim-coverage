@@ -66,7 +66,7 @@ M.summary = function(json_data)
 			end
 		end
 		table.insert(files, {
-			filename = fname,
+			filename = Path:new(fname):make_relative(),
 			statements = statements,
 			missing = missing,
 			excluded = nil, -- simplecov JSON report doesn't have this information
