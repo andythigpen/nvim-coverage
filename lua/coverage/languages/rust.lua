@@ -33,14 +33,16 @@ M.summary = function(json_data)
 		statements = 0,
 		missing = 0,
 		excluded = nil,
-		branches = nil,
-		partial = nil,
+		branches = 0,
+		partial = 0,
 		coverage = 0,
 	}
 	local files = {}
 	for _, file in ipairs(json_data.source_files) do
 		local statements = 0
 		local missing = 0
+		local branches = 0
+		local partial = 0
 		local fname = Path:new(file.name):make_relative()
 		for _, hits in ipairs(file.coverage) do
 			totals.statements = totals.statements + 1
@@ -50,17 +52,30 @@ M.summary = function(json_data)
 				missing = missing + 1
 			end
 		end
+		for i = 1, #file.branches - 1, 4 do
+			-- format: [line-number, block-number, branch-number, hits]
+			local hits = file.branches[i + 3]
+			totals.branches = totals.branches + 1
+			branches = branches + 1
+			if hits == 0 then
+				totals.partial = totals.partial + 1
+				partial = partial + 1
+			end
+		end
 		table.insert(files, {
 			filename = fname,
 			statements = statements,
 			missing = missing,
 			excluded = nil,
-			branches = nil, -- TODO
-			partial = nil,
-			coverage = ((statements - missing) / statements) * 100.0,
+			branches = branches,
+			partial = partial,
+			coverage = ((statements + branches - missing - partial) / (statements + branches)) * 100.0,
 		})
 	end
-	totals.coverage = ((totals.statements - totals.missing) / totals.statements) * 100.0
+	totals.coverage = (
+			(totals.statements + totals.branches - totals.missing - totals.partial)
+			/ (totals.statements + totals.branches)
+		) * 100.0
 	return {
 		files = files,
 		totals = totals,
@@ -102,11 +117,6 @@ M.load = function(callback)
 		on_exit = vim.schedule_wrap(function()
 			if #stderr > 0 then
 				vim.notify(stderr, vim.log.levels.ERROR)
-				return
-			end
-			-- TODO
-			if stdout == "No data to report." then
-				vim.notify(stdout, vim.log.levels.INFO)
 				return
 			end
 			util.safe_decode(stdout, callback)
