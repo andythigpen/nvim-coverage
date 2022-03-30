@@ -36,6 +36,16 @@ local defaults = {
 		min_coverage = 80.0,
 	},
 	lang = {
+		julia = {
+            -- See https://github.com/julia-actions/julia-processcoverage
+            coverage_command = "julia --compile=min -O0 -e '" .. [[
+                !isdir("src") && (print(stderr, "No src directory found."); exit(1))
+                push!(empty!(LOAD_PATH), "@nvim-coverage", "@stdlib")
+                using CoverageTools
+                LCOV.writefile("lcov.info", process_folder("src"))
+            ]] .. "'",
+			coverage_file = "lcov.info",
+		},
 		python = {
 			coverage_file = ".coverage",
 			coverage_command = "coverage json -q -o -",

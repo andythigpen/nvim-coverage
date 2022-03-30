@@ -116,6 +116,26 @@ Valid keys for {opts.lang}:
 ================================================================================
 LANGUANGE SPECIFIC SETUP                            *nvim-coverage-lang-setup*
 
+                                                        *nvim-coverage-julia*
+Julias package manager outputs code coverage files when running package tests
+with `Pkg.test(; coverage=true)`. The plugin processes these files using the
+`CoverageTools.jl` package, which is expected to be installed in the
+`@nvim-coverage` environment. The package can be installed with the following
+shell command:
+
+   `julia --project=@nvim-coverage -e 'using Pkg; Pkg.add("CoverageTools")'`
+
+No other configuration should be necessary, but the following options are
+available:
+
+    coverage_file: ~
+        File that the plugin will try to read coverage from.
+        Defaults to: `"lcov.info"`
+    coverage_command: ~
+        Command for creating `"lcov.info"` from individual coverage output
+        files.
+        Defaults to: `"julia --project=@nvim-coverage -e 'using CoverageTools; LCOV.writefile("lcov.info", process_folder("src"))"`
+
                                                         *nvim-coverage-python*
 Python (coverage.py) supports the following configuration options:
 
