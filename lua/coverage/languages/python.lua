@@ -83,10 +83,15 @@ M.load = function(callback)
 				stderr = stderr .. line
 			end
 		end),
-		on_exit = vim.schedule_wrap(function()
-			if #stderr > 0 then
+		on_exit = vim.schedule_wrap(function(_, exit_code)
+			if exit_code ~= 0 then
+				if #stderr == 0 then
+					stderr = "Failed to generate coverage"
+				end
 				vim.notify(stderr, vim.log.levels.ERROR)
 				return
+			elseif #stderr > 0 then
+				vim.notify(stderr, vim.log.levels.WARN)
 			end
 			if stdout == "No data to report." then
 				vim.notify(stdout, vim.log.levels.INFO)
