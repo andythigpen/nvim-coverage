@@ -37,8 +37,8 @@ local defaults = {
 	},
 	lang = {
 		julia = {
-            -- See https://github.com/julia-actions/julia-processcoverage
-            coverage_command = "julia --compile=min -O0 -e '" .. [[
+			-- See https://github.com/julia-actions/julia-processcoverage
+			coverage_command = "julia --compile=min -O0 -e '" .. [[
                 !isdir("src") && (print(stderr, "No src directory found."); exit(1))
                 push!(empty!(LOAD_PATH), "@nvim-coverage", "@stdlib")
                 using CoverageTools
@@ -48,7 +48,7 @@ local defaults = {
 		},
 		python = {
 			coverage_file = ".coverage",
-			coverage_command = "coverage json -q -o -",
+			coverage_command = "coverage json --fail-under=0 -q -o -",
 		},
 		ruby = {
 			coverage_file = "coverage/coverage.json",
