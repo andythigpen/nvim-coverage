@@ -58,6 +58,9 @@ local defaults = {
 			project_files_only = true,
 			project_files = { "src/*", "tests/*" },
 		},
+		dart = {
+			coverage_file = "coverage/lcov.info",
+		},
 	},
 }
 
