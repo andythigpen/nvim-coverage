@@ -36,6 +36,12 @@ local defaults = {
 		min_coverage = 80.0,
 	},
 	lang = {
+		dart = {
+			coverage_file = "coverage/lcov.info",
+		},
+		javascript = {
+			coverage_file = "coverage/lcov.info",
+		},
 		julia = {
 			-- See https://github.com/julia-actions/julia-processcoverage
 			coverage_command = "julia --compile=min -O0 -e '" .. [[
@@ -57,9 +63,6 @@ local defaults = {
 			coverage_command = "grcov ${cwd} -s ${cwd} --binary-path ./target/debug/ -t coveralls --branch --ignore-not-existing --token NO_TOKEN",
 			project_files_only = true,
 			project_files = { "src/*", "tests/*" },
-		},
-		dart = {
-			coverage_file = "coverage/lcov.info",
 		},
 	},
 }
