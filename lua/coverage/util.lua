@@ -22,20 +22,38 @@ M.chain = function(a, b)
 	end
 end
 
---- Parses a lcov files into a table,
---- see http://ltp.sourceforge.net/coverage/lcov/geninfo.1.php for spec
---- @param path Path
-M.lcov_to_table = function(path)
-	local files = {}
-	local function new_file_meta()
-		return {
-			summary = {},
-			missing_lines = {},
-			executed_lines = {},
-			excluded_lines = {},
-		}
-	end
+--- @class CoverageFileSummary
+--- @field covered_lines number
+--- @field excluded_lines number
+--- @field num_statements number
+--- @field percent_covered number
 
+--- @class CoverageFile
+--- @field summary CoverageFileSummary
+--- @field missing_lines number[]
+--- @field executed_lines number[]
+--- @field excluded_lines number[]
+
+--- Returns a table containing file parameters.
+--- @return CoverageFile
+M.new_file_meta = function()
+	return {
+		summary = {
+			covered_lines = 0,
+			excluded_lines = 0,
+			num_statements = 0,
+			percent_covered = 0,
+		},
+		missing_lines = {},
+		executed_lines = {},
+		excluded_lines = {},
+	}
+end
+
+--- Parses an lcov report from path into files.
+--- @param path Path
+--- @param files table<string, CoverageFile>
+local lcov_parser = function(path, files)
 	local cfile = nil -- Current file
 	local cmeta = nil -- Current metadata
 
@@ -51,7 +69,7 @@ M.lcov_to_table = function(path)
 		elseif line:match("SF:.+") then
 			-- SF:<absolute path to the source file>
 			cfile = line:gsub("SF:", "")
-			cmeta = new_file_meta()
+			cmeta = M.new_file_meta()
 		elseif line:match("DA:%d+,%d+,?.*") then
 			-- DA:<line number>,<execution count>[,<checksum>]
 			local ls, ns = line:match("DA:(%d+),(%d+),?.*")
@@ -73,6 +91,15 @@ M.lcov_to_table = function(path)
 			-- Everything else is uninteresting, just move on...
 		end
 	end
+end
+
+--- Parses a generic report into a files table.
+--- @param path Path
+--- @param parser fun(path:Path, files:table<string, CoverageFile>)
+M.report_to_table = function(path, parser)
+	local files = {}
+
+	parser(path, files)
 
 	-- Compute global summary
 	local totals = { num_statements = 0, covered_lines = 0, excluded_lines = 0 }
@@ -84,6 +111,13 @@ M.lcov_to_table = function(path)
 	totals.percent_covered = totals.covered_lines / totals.num_statements * 100
 
 	return { meta = {}, totals = totals, files = files }
+end
+
+--- Parses a lcov files into a table,
+--- see http://ltp.sourceforge.net/coverage/lcov/geninfo.1.php for spec
+--- @param path Path
+M.lcov_to_table = function(path)
+	return M.report_to_table(path, lcov_parser)
 end
 
 return M

@@ -39,6 +39,9 @@ local defaults = {
 		dart = {
 			coverage_file = "coverage/lcov.info",
 		},
+		go = {
+			coverage_file = "coverage.out",
+		},
 		javascript = {
 			coverage_file = "coverage/lcov.info",
 		},
