@@ -116,7 +116,14 @@ Valid keys for {opts.lang}:
 ================================================================================
 LANGUANGE SPECIFIC SETUP                            *nvim-coverage-lang-setup*
 
-                                                        *nvim-coverage-julia*
+                                                          *nvim-coverage-dart*
+Dart supports the following configuration options:
+
+    coverage_file: ~
+        File that the plugin will try to read coverage from.
+        Defaults to: `"coverage/lcov.info"`
+
+                                                         *nvim-coverage-julia*
 Julias package manager outputs code coverage files when running package tests
 with `Pkg.test(; coverage=true)`. The plugin processes these files using the
 `CoverageTools.jl` package, which is expected to be installed in the
