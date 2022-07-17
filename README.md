@@ -11,6 +11,7 @@ Displays a coverage summary report in a pop-up window.
 Currently supports:
 
 - Dart (lcov)
+- Go (coverprofile)
 - Javascript/Typescript (lcov): [jest](https://jestjs.io/docs/getting-started)
 - Julia (lcov): [Pkg.jl](https://pkgdocs.julialang.org/v1/)
 - Python (json): [coverage.py](https://coverage.readthedocs.io/en/6.3.2/index.html)
