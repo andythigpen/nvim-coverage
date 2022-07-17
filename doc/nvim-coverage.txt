@@ -123,6 +123,13 @@ Dart supports the following configuration options:
         File that the plugin will try to read coverage from.
         Defaults to: `"coverage/lcov.info"`
 
+                                                            *nvim-coverage-go*
+Go supports the following configuration options:
+
+    coverage_file: ~
+        File that the plugin will try to read coverage from.
+        Defaults to: `"coverage.out"`
+
                                                     *nvim-coverage-javascript*
                                                     *nvim-coverage-typescript*
 Javascript and Typescript share the same configuration and support the
