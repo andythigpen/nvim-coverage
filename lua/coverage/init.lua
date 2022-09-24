@@ -42,6 +42,11 @@ M.load = function(place)
 
 	local load_lang = function()
 		lang.load(function(result)
+			if config.opts.load_coverage_cb ~= nil then
+				vim.schedule(function()
+					config.opts.load_coverage_cb(ftype)
+				end)
+			end
 			report.cache(result, ftype)
 			local sign_list = lang.sign_list(result)
 			if place then

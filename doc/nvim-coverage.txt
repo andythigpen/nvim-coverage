@@ -46,6 +46,16 @@ Valid keys for {opts}:
     commands: ~
         If true, create commands. See |nvim-coverage-commands|.
         Defaults to: `true`
+    load_coverage_cb: ~
+        A lua function that will be called when a coverage file is loaded. 
+        Example: >
+
+        require("coverage").setup({
+            load_coverage_cb = function (ftype)
+                vim.notify("Loaded " .. ftype .. " coverage")
+            end,
+        })
+<
     sign_group: ~
         Name of the sign group used when placing the signs. See |sign-group|.
         Defaults to: `coverage`

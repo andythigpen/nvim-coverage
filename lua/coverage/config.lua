@@ -3,6 +3,7 @@
 --- @field auto_reload_timeout_ms integer
 --- @field commands boolean
 --- @field lang table
+--- @field load_coverage_cb fun(ftype: string)
 
 local M = {
 	--- @type Configuration
@@ -24,6 +25,7 @@ local defaults = {
 		summary_pass = { link = "CoverageCovered" },
 		summary_fail = { link = "CoverageUncovered" },
 	},
+	load_coverage_cb = nil,
 	signs = {
 		covered = { hl = "CoverageCovered", text = "▎" },
 		uncovered = { hl = "CoverageUncovered", text = "▎" },
@@ -45,6 +47,8 @@ local defaults = {
 		},
 		min_coverage = 80.0,
 	},
+
+	-- language specific configuration
 	lang = {
 		dart = {
 			coverage_file = "coverage/lcov.info",
