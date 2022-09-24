@@ -5,6 +5,7 @@ local signs = require("coverage.signs")
 local highlight = require("coverage.highlight")
 local summary = require("coverage.summary")
 local report = require("coverage.report")
+local watch = require("coverage.watch")
 
 --- Setup the coverage plugin.
 -- Also defines signs, creates highlight groups.
@@ -29,7 +30,7 @@ M.setup = function(user_opts)
 end
 
 --- Loads a coverage report but does not place signs.
--- @param place (bool) true to immediately place signs
+--- @param place boolean true to immediately place signs
 M.load = function(place)
 	local ftype = vim.bo.filetype
 
@@ -39,16 +40,28 @@ M.load = function(place)
 		return
 	end
 
+	local load_lang = function()
+		lang.load(function(result)
+			report.cache(result, ftype)
+			local sign_list = lang.sign_list(result)
+			if place then
+				signs.place(sign_list)
+			else
+				signs.cache(sign_list)
+			end
+		end)
+	end
+
+	local lang_config = config.opts.lang[ftype]
+	if lang_config == nil then
+		lang_config = config.opts.lang[lang.config_alias]
+	end
+	if lang_config ~= nil and lang_config.coverage_file ~= nil then
+		watch.start(lang_config.coverage_file, load_lang)
+	end
+
 	signs.clear()
-	lang.load(function(result)
-		report.cache(result, ftype)
-		local sign_list = lang.sign_list(result)
-		if place then
-			signs.place(sign_list)
-		else
-			signs.cache(sign_list)
-		end
-	end)
+	load_lang()
 end
 
 -- Shows signs, if loaded.

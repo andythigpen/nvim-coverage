@@ -36,6 +36,13 @@ coverage.setup({opts})
 
 Valid keys for {opts}:
 
+    auto_reload: ~
+        If true, the `coverage_file` for a langauge will be watched for
+        changes after executing |:CoverageLoad| or |coverage.load()|. The file watcher will be
+        stopped after executing |:CoverageClear| or |coverage.clear()|.
+    auto_reload_timeout_ms: ~
+        The number of milliseconds to wait before auto-reloading coverage
+        after detecting a change.
     commands: ~
         If true, create commands. See |nvim-coverage-commands|.
         Defaults to: `true`
@@ -232,6 +239,10 @@ LUA API                                                    *nvim-coverage-lua*
 coverage.load({place})
     Loads a coverage report. When {place} is true, also place the signs in the
     sign column.
+
+                                                            *coverage.clear()*
+coverage.clear()
+    Clears a loaded coverage report. Removes any placed signs.
 
                                                              *coverage.show()*
 coverage.show()

@@ -1,8 +1,18 @@
+--- @class Configuration
+--- @field auto_reload boolean
+--- @field auto_reload_timeout_ms integer
+--- @field commands boolean
+--- @field lang table
+
 local M = {
+	--- @type Configuration
 	opts = {},
 }
 
+--- @type Configuration
 local defaults = {
+	auto_reload = false,
+	auto_reload_timeout_ms = 500,
 	commands = true,
 	highlights = {
 		covered = { fg = "#C3E88D" },
