@@ -22,25 +22,14 @@ M.chain = function(a, b)
 	end
 end
 
---- @class CoverageFileSummary
---- @field covered_lines number
---- @field excluded_lines number
---- @field num_statements number
---- @field percent_covered number
-
---- @class CoverageFile
---- @field summary CoverageFileSummary
---- @field missing_lines number[]
---- @field executed_lines number[]
---- @field excluded_lines number[]
-
 --- Returns a table containing file parameters.
---- @return CoverageFile
+--- @return FileCoverage
 M.new_file_meta = function()
 	return {
 		summary = {
 			covered_lines = 0,
 			excluded_lines = 0,
+			missing_lines = 0,
 			num_statements = 0,
 			percent_covered = 0,
 		},
@@ -52,13 +41,17 @@ end
 
 --- Parses an lcov report from path into files.
 --- @param path Path
---- @param files table<string, CoverageFile>
+--- @param files table<string, FileCoverage>
 local lcov_parser = function(path, files)
-	local cfile = nil -- Current file
-	local cmeta = nil -- Current metadata
+	--- Current file
+	--- @type string|nil
+	local cfile = nil
+	--- Current metadata
+	--- @type FileCoverage|nil
+	local cmeta = nil
 
 	for _, line in ipairs(path:readlines()) do
-		if line:match("end_of_record") then
+		if line:match("end_of_record") and cmeta ~= nil and cfile ~= nil then
 			-- Commit the current file
 			cmeta.summary["excluded_lines"] = 0
 			cmeta.summary["percent_covered"] = cmeta.summary.covered_lines / cmeta.summary.num_statements * 100
@@ -70,7 +63,7 @@ local lcov_parser = function(path, files)
 			-- SF:<absolute path to the source file>
 			cfile = line:gsub("SF:", "")
 			cmeta = M.new_file_meta()
-		elseif line:match("DA:%d+,%d+,?.*") then
+		elseif line:match("^DA:%d+,%d+,?.*") and cmeta ~= nil then
 			-- DA:<line number>,<execution count>[,<checksum>]
 			local ls, ns = line:match("DA:(%d+),(%d+),?.*")
 			local l, n = tonumber(ls), tonumber(ns)
@@ -78,12 +71,13 @@ local lcov_parser = function(path, files)
 				table.insert(cmeta.executed_lines, l)
 			else
 				table.insert(cmeta.missing_lines, l)
+				cmeta.summary.missing_lines = cmeta.summary.missing_lines + 1
 			end
-		elseif line:match("LH:%d+") then
+		elseif line:match("LH:%d+") and cmeta ~= nil then
 			-- LH:<number of lines with a non-zero execution count>
 			local lh = tonumber((line:gsub("LH:", "")))
 			cmeta.summary["covered_lines"] = lh
-		elseif line:match("LF:%d+") then
+		elseif line:match("LF:%d+") and cmeta ~= nil then
 			-- LF:<number of instrumented lines>
 			local lf = tonumber((line:gsub("LF:", "")))
 			cmeta.summary["num_statements"] = lf
@@ -95,17 +89,25 @@ end
 
 --- Parses a generic report into a files table.
 --- @param path Path
---- @param parser fun(path:Path, files:table<string, CoverageFile>)
+--- @param parser fun(path:Path, files:table<string, FileCoverage>)
+--- @return CoverageData
 M.report_to_table = function(path, parser)
+	--- @type table<string, FileCoverage>
 	local files = {}
 
 	parser(path, files)
 
-	-- Compute global summary
-	local totals = { num_statements = 0, covered_lines = 0, excluded_lines = 0 }
+	--- @type CoverageSummary
+	local totals = {
+		num_statements = 0,
+		covered_lines = 0,
+		missing_lines = 0,
+		excluded_lines = 0,
+	}
 	for _, meta in pairs(files) do
 		totals.num_statements = totals.num_statements + meta.summary.num_statements
 		totals.covered_lines = totals.covered_lines + meta.summary.covered_lines
+		totals.missing_lines = totals.missing_lines + meta.summary.missing_lines
 		totals.excluded_lines = totals.excluded_lines + meta.summary.excluded_lines
 	end
 	totals.percent_covered = totals.covered_lines / totals.num_statements * 100

@@ -2,9 +2,30 @@ local M = {}
 
 local signs = require("coverage.signs")
 
+--- @class FileCoverage
+--- @field excluded_lines integer[] line numbers excluded from the coverage report
+--- @field executed_lines integer[] line numbers executed under test
+--- @field missing_lines integer[] line numbers not executed under test
+--- @field summary CoverageSummary
+
+--- @class CoverageSummary
+--- @field covered_lines integer total number of covered lines
+--- @field missing_lines integer total number of uncovered lines
+--- @field excluded_lines integer total number of excluded lines
+--- @field num_branches integer total number of branches
+--- @field num_partial_branches integer total number of partially covered branches
+--- @field num_statements integer total number of statements
+--- @field percent_covered number percentage of covered lines to total statements
+
+--- @class CoverageData
+--- @field files table<string, FileCoverage>
+--- @field totals CoverageSummary
+
 --- Returns a list of signs to be placed.
--- @param json_data from the generated report
+--- @param json_data CoverageData data from the generated report
+--- @returns SignPlace[]
 M.sign_list = function(json_data)
+	--- @type SignPlace[]
 	local sign_list = {}
 	for fname, cov in pairs(json_data.files) do
 		local buffer = vim.fn.bufnr(fname, false)
@@ -22,6 +43,7 @@ M.sign_list = function(json_data)
 end
 
 --- Returns a summary report.
+--- @param json_data CoverageData
 M.summary = function(json_data)
 	local files = {}
 	local totals = {

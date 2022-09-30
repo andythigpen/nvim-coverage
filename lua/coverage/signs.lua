@@ -5,6 +5,19 @@ local ns = "coverage_"
 local enabled = false
 local cached_signs = nil
 
+--- @class Sign
+--- @field hl string name of the highlight group
+--- @field text string text to place in sign column
+--- @field priority integer? optional priority (default 10; highest wins)
+
+--- @class SignPlace
+--- @field buffer string|integer
+--- @field group string
+--- @field id? integer
+--- @field lnum integer
+--- @field name string
+--- @field priority integer
+
 --- Defines signs.
 M.setup = function()
 	vim.fn.sign_define(M.name("covered"), {
@@ -18,20 +31,20 @@ M.setup = function()
 end
 
 --- Returns a namespaced sign name.
--- @param name
+--- @param name string
 M.name = function(name)
 	return ns .. name
 end
 
 --- Caches signs but does not place them.
--- @param signs list (reference sign_placelist)
+--- @param signs SignPlace[] (:h sign_placelist)
 M.cache = function(signs)
 	M.unplace()
 	cached_signs = signs
 end
 
 --- Places a list of signs
--- @param signs list (reference sign_placelist)
+--- @param signs SignPlace[] (:h sign_placelist)
 M.place = function(signs)
 	vim.fn.sign_placelist(signs)
 	enabled = true
@@ -73,7 +86,9 @@ M.clear = function()
 end
 
 --- Returns a new covered sign in the format used by sign_placelist.
--- @return sign
+--- @param buffer string|integer buffer name or id
+--- @param lnum integer line number
+--- @return SignPlace
 M.new_covered = function(buffer, lnum)
 	return {
 		buffer = buffer,
@@ -85,7 +100,9 @@ M.new_covered = function(buffer, lnum)
 end
 
 --- Returns a new uncovered sign in the format used by sign_placelist.
--- @return sign
+--- @param buffer string|integer buffer name or id
+--- @param lnum integer line number
+--- @return SignPlace
 M.new_uncovered = function(buffer, lnum)
 	return {
 		buffer = buffer,

@@ -2,6 +2,15 @@ local M = {}
 
 local config = require("coverage.config")
 
+--- @class Highlight
+--- @field fg string
+--- @field bg string
+--- @field sp string
+--- @field style string
+--- @field link? string
+
+--- @param group string name of the highlight group
+--- @param color Highlight
 local highlight = function(group, color)
 	local style = color.style and "gui=" .. color.style or "gui=NONE"
 	local fg = color.fg and "guifg=" .. color.fg or "guifg=NONE"
