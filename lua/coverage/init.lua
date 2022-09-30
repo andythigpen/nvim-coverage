@@ -79,7 +79,10 @@ M.hide = signs.unplace
 M.toggle = signs.toggle
 
 --- Hides and clears cached signs.
-M.clear = signs.clear
+M.clear = function()
+	signs.clear()
+	watch.stop()
+end
 
 --- Displays a pop-up with a coverage summary report.
 M.summary = summary.show
