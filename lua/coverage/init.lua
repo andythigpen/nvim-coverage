@@ -49,7 +49,7 @@ M.load = function(place)
 			end
 			report.cache(result, ftype)
 			local sign_list = lang.sign_list(result)
-			if place then
+			if place or signs.is_enabled() then
 				signs.place(sign_list)
 			else
 				signs.cache(sign_list)
