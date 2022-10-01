@@ -40,7 +40,7 @@ end
 
 --- Parses a coverprofile formatted file
 --- @param path Path
---- @param files table<string, CoverageFile>
+--- @param files table<string, FileCoverage>
 local parse_coverprofile = function(path, files)
 	local lines_by_filename = {}
 	local lines = path:readlines()

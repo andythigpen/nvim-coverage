@@ -1,20 +1,32 @@
---- @class Configuration
---- @field auto_reload boolean
---- @field auto_reload_timeout_ms integer
---- @field commands boolean
---- @field lang table
---- @field load_coverage_cb fun(ftype: string)
-
 local M = {
 	--- @type Configuration
 	opts = {},
 }
 
---- @type Configuration
+--- @class Configuration
+--- @field auto_reload boolean
+--- @field auto_reload_timeout_ms integer
+--- @field commands boolean
+--- @field highlights HighlightConfig
+--- @field load_coverage_cb fun(ftype: string)
+--- @field signs SignsConfig
+--- @field sign_group string name of the sign group (:h sign_placelist)
+--- @field summary SummaryOpts
+--- @field lang table
 local defaults = {
 	auto_reload = false,
 	auto_reload_timeout_ms = 500,
 	commands = true,
+
+	--- @class HighlightConfig
+	--- @field covered Highlight
+	--- @field uncovered Highlight
+	--- @field summary_border Highlight
+	--- @field summary_normal Highlight
+	--- @field summary_cursor_line Highlight
+	--- @field summary_header Highlight
+	--- @field summary_pass Highlight
+	--- @field summary_fail Highlight
 	highlights = {
 		covered = { fg = "#C3E88D" },
 		uncovered = { fg = "#F07178" },
@@ -26,11 +38,20 @@ local defaults = {
 		summary_fail = { link = "CoverageUncovered" },
 	},
 	load_coverage_cb = nil,
+
+	--- @class SignsConfig
+	--- @field covered Sign
+	--- @field uncovered Sign
 	signs = {
 		covered = { hl = "CoverageCovered", text = "▎" },
 		uncovered = { hl = "CoverageUncovered", text = "▎" },
 	},
 	sign_group = "coverage",
+
+	--- @class SummaryOpts
+	--- @field width_percentage number
+	--- @field height_percentage number
+	--- @field min_coverage number
 	summary = {
 		width_percentage = 0.70,
 		height_percentage = 0.50,
