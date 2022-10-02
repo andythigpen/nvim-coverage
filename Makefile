@@ -1,7 +1,7 @@
 .PHONY: test
 
-# TODO: run nvim tests
-test: python-coverage
+test: python-coverage go-coverage
+	@nvim --headless -c "PlenaryBustedDirectory tests/"
 
 tests/languages/python/.coverage:
 	@(cd tests/languages/python && \
@@ -10,3 +10,8 @@ tests/languages/python/.coverage:
 
 python-coverage: tests/languages/python/.coverage
 
+tests/languages/go/coverage.out:
+	@(cd tests/languages/go && \
+		go test -race -covermode=atomic -coverprofile=coverage.out ./...)
+
+go-coverage: tests/languages/go/coverage.out
