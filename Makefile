@@ -1,9 +1,9 @@
 .PHONY: test
 
-test: python-coverage go-coverage typescript-coverage
+test: python-coverage go-coverage typescript-coverage ruby-coverage
 	@nvim --headless -c "PlenaryBustedDirectory tests/"
 
-clean: python-clean go-clean typescript-clean
+clean: python-clean go-clean typescript-clean ruby-clean
 
 ## Python
 tests/languages/python/.coverage:
@@ -33,7 +33,7 @@ go-clean:
 		rm -f coverage.out)
 
 
-## typescript
+## Typescript
 tests/languages/typescript/coverage/lcov.info:
 	@(cd tests/languages/typescript && \
 		npm install && \
@@ -45,3 +45,18 @@ typescript-coverage: tests/languages/typescript/coverage/lcov.info
 typescript-clean:
 	@(cd tests/languages/typescript && \
 		rm -rf node_modules coverage)
+
+
+## Ruby
+tests/languages/ruby/coverage/coverage.json:
+	@(cd tests/languages/ruby && \
+		bundle install && \
+		bundle exec rspec)
+
+.PHONY: ruby-coverage ruby-clean
+ruby-coverage: tests/languages/ruby/coverage/coverage.json
+
+ruby-clean:
+	@(cd tests/languages/ruby && \
+		rm -rf coverage vendor .rspec_status)
+
