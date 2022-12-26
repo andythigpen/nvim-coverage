@@ -10,9 +10,10 @@ describe("languages.typescript", function()
             signs.new_covered(bufname, 5),
             signs.new_covered(bufname, 6),
             signs.new_covered(bufname, 7),
-            signs.new_covered(bufname, 8),
+            signs.new_partial(bufname, 8),
             signs.new_uncovered(bufname, 9),
             signs.new_uncovered(bufname, 10),
+            signs.new_covered(bufname, 11),
         }
         ---@diagnostic disable-next-line: unused-local
         for i, sign in ipairs(lines) do

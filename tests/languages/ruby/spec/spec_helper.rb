@@ -1,9 +1,16 @@
 require "bundler/setup"
 
 require "simplecov"
+require "simplecov-html"
 require "simplecov_json_formatter"
-SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
-SimpleCov.start
+# SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::JSONFormatter,
+])
+SimpleCov.start do
+  enable_coverage :branch
+end
 
 require "fizzbuzz"
 

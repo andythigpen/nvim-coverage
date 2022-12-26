@@ -72,10 +72,13 @@ Valid keys for {opts.highlights}:
 
     covered: ~
         Customize the highlight group for covered signs.
-        Defaults to: `{ fg = "#C3E88D" }`
+        Defaults to: `{ fg = "#B7F071" }`
     uncovered: ~
         Customize the highlight group for uncovered signs.
         Defaults to: `{ fg = "#F07178" }`
+    partial: ~
+        Customize the highlight group for partial coverage signs.
+        Defaults to: `{ fg = "#AA71F0" }`
     summary_border: ~
         Customize the border highlight group of the summary pop-up.
         Defaults to: `{ link = "FloatBorder" }`
@@ -104,6 +107,9 @@ Valid keys for {opts.signs}:
     uncovered: ~
         Customize the highlight group and text used for uncovered signs.
         Defaults to: `{ hl = "CoverageUncovered", text = "▎" }`
+    partial: ~
+        Customize the highlight group and text used for partial coverage signs.
+        Defaults to: `{ hl = "CoveragePartial", text = "▎" }`
 
                                                             *coverage.summary*
 Valid keys for {opts.summary}:

@@ -21,6 +21,7 @@ local defaults = {
     --- @class HighlightConfig
     --- @field covered Highlight
     --- @field uncovered Highlight
+    --- @field partial Highlight
     --- @field summary_border Highlight
     --- @field summary_normal Highlight
     --- @field summary_cursor_line Highlight
@@ -28,8 +29,9 @@ local defaults = {
     --- @field summary_pass Highlight
     --- @field summary_fail Highlight
     highlights = {
-        covered = { fg = "#C3E88D" },
+        covered = { fg = "#B7F071" },
         uncovered = { fg = "#F07178" },
+        partial = { fg = "#AA71F0" },
         summary_border = { link = "FloatBorder" },
         summary_normal = { link = "NormalFloat" },
         summary_cursor_line = { link = "CursorLine" },
@@ -42,9 +44,11 @@ local defaults = {
     --- @class SignsConfig
     --- @field covered Sign
     --- @field uncovered Sign
+    --- @field partial Sign
     signs = {
         covered = { hl = "CoverageCovered", text = "▎" },
         uncovered = { hl = "CoverageUncovered", text = "▎" },
+        partial = { hl = "CoveragePartial", text = "▎" },
     },
     sign_group = "coverage",
 

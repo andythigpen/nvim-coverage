@@ -8,7 +8,7 @@ describe("languages.python", function()
             signs.new_covered(bufname, 3),
             signs.new_covered(bufname, 4),
             signs.new_covered(bufname, 5),
-            signs.new_covered(bufname, 6),
+            signs.new_partial(bufname, 6),
             signs.new_covered(bufname, 7),
             signs.new_uncovered(bufname, 9),
         }
