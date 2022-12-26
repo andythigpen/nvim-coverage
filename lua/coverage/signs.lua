@@ -94,6 +94,42 @@ M.clear = function()
     cached_signs = nil
 end
 
+--- Jumps to a sign of the given type in the given direction.
+--- @param sign_type? "covered"|"uncovered"|"partial" Defaults to "covered"
+--- @param direction? -1|1 Defaults to 1 (forward)
+M.jump = function(sign_type, direction)
+    if not enabled or cached_signs == nil then
+        return
+    end
+    local placed = vim.fn.sign_getplaced("", { group = config.opts.sign_group })
+    if #placed == 0 then
+        return
+    end
+    local current_lnum = vim.fn.line(".")
+    local sign_name = M.name("covered")
+    if sign_type ~= nil then
+        sign_name = M.name(sign_type)
+    end
+    direction = direction or 1
+
+    local placed_signs = placed[1].signs
+    if direction < 0 then
+        table.sort(placed_signs, function(a, b)
+            return a.lnum > b.lnum
+        end)
+    end
+
+    for _, sign in ipairs(placed_signs) do
+        if direction > 0 and sign.lnum > current_lnum and sign_name == sign.name then
+            vim.fn.sign_jump(sign.id, config.opts.sign_group, "")
+            return
+        elseif direction < 0 and sign.lnum < current_lnum and sign_name == sign.name then
+            vim.fn.sign_jump(sign.id, config.opts.sign_group, "")
+            return
+        end
+    end
+end
+
 --- Returns a new covered sign in the format used by sign_placelist.
 --- @param buffer string|integer buffer name or id
 --- @param lnum integer line number

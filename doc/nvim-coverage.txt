@@ -276,5 +276,14 @@ coverage.toggle()
 coverage.summary()
     Displays a coverage summary report in a pop-up window.
 
+                                                          *coverage.jump_next()*
+coverage.jump_next({sign_type})
+    Jumps to the next line in the current buffer with the given sign_type
+    ("covered"|"uncovered"|"partial")
+
+                                                          *coverage.jump_prev()*
+coverage.jump_prev({sign_type})
+    Jumps to the previous line in the current buffer with the given sign_type
+    ("covered"|"uncovered"|"partial")
 
  vim:tw=78:ts=8:ft=help:norl:
