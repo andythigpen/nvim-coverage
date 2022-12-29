@@ -6,7 +6,7 @@ local signs = require("coverage.signs")
 --- @field excluded_lines integer[] line numbers excluded from the coverage report
 --- @field executed_lines integer[] line numbers executed under test
 --- @field missing_lines integer[] line numbers not executed under test
---- @field missing_branches integer[][] line numbers partially executed under test
+--- @field missing_branches integer[][]|nil line numbers partially executed under test
 --- @field summary CoverageSummary
 
 --- @class CoverageSummary
@@ -33,9 +33,11 @@ M.sign_list = function(json_data)
         if buffer ~= -1 then
             -- group missing branches by `from` line number
             local missing_branches_from = {}
-            for _, branch in ipairs(cov.missing_branches) do
-                -- branch is { from, to }
-                table.insert(missing_branches_from, branch[1])
+            if cov.missing_branches ~= nil then
+                for _, branch in ipairs(cov.missing_branches) do
+                    -- branch is { from, to }
+                    table.insert(missing_branches_from, branch[1])
+                end
             end
 
             for _, lnum in ipairs(cov.executed_lines) do
