@@ -6,6 +6,7 @@ local signs = require("coverage.signs")
 --- @field excluded_lines integer[] line numbers excluded from the coverage report
 --- @field executed_lines integer[] line numbers executed under test
 --- @field missing_lines integer[] line numbers not executed under test
+--- @field missing_branches integer[][]|nil line numbers partially executed under test
 --- @field summary CoverageSummary
 
 --- @class CoverageSummary
@@ -30,12 +31,32 @@ M.sign_list = function(json_data)
     for fname, cov in pairs(json_data.files) do
         local buffer = vim.fn.bufnr(fname, false)
         if buffer ~= -1 then
+            -- group missing branches by `from` line number
+            local missing_branches_from = {}
+            if cov.missing_branches ~= nil then
+                for _, branch in ipairs(cov.missing_branches) do
+                    -- branch is { from, to }
+                    table.insert(missing_branches_from, branch[1])
+                end
+            end
+
             for _, lnum in ipairs(cov.executed_lines) do
-                table.insert(sign_list, signs.new_covered(buffer, lnum))
+                -- a line cannot be fully covered if there are executed missing branches from it
+                if not vim.tbl_contains(missing_branches_from, lnum) then
+                    table.insert(sign_list, signs.new_covered(buffer, lnum))
+                end
             end
 
             for _, lnum in ipairs(cov.missing_lines) do
                 table.insert(sign_list, signs.new_uncovered(buffer, lnum))
+            end
+
+            for _, lnum in ipairs(missing_branches_from) do
+                -- if from is a missing_line, all branches are missing coverage so we can ignore here
+                -- otherwise, if the line is not missing but branches are, then the line is partially coverged
+                if not vim.tbl_contains(cov.missing_lines, lnum) then
+                    table.insert(sign_list, signs.new_partial(buffer, lnum))
+                end
             end
         end
     end
