@@ -26,6 +26,7 @@ end
 local create_highlight_groups = function()
     highlight("CoverageCovered", config.opts.highlights.covered)
     highlight("CoverageUncovered", config.opts.highlights.uncovered)
+    highlight("CoveragePartial", config.opts.highlights.partial)
     highlight("CoverageSummaryBorder", config.opts.highlights.summary_border)
     highlight("CoverageSummaryNormal", config.opts.highlights.summary_normal)
     highlight("CoverageSummaryCursorLine", config.opts.highlights.summary_cursor_line)

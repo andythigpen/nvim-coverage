@@ -87,4 +87,16 @@ end
 --- Displays a pop-up with a coverage summary report.
 M.summary = summary.show
 
+--- Jumps to the next sign of the given type.
+--- @param sign_type? "covered"|"uncovered"|"partial" Defaults to "covered"
+M.jump_next = function(sign_type)
+    signs.jump(sign_type, 1)
+end
+
+--- Jumps to the previous sign of the given type.
+--- @param sign_type? "covered"|"uncovered"|"partial" Defaults to "covered"
+M.jump_prev = function(sign_type)
+    signs.jump(sign_type, -1)
+end
+
 return M
