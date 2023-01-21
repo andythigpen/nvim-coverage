@@ -106,6 +106,9 @@ local defaults = {
             project_files_only = true,
             project_files = { "src/*", "tests/*" },
         },
+        cpp = {
+            coverage_file = "report.info",
+        },
     },
 }
 
