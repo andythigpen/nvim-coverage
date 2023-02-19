@@ -19,7 +19,10 @@ local function watch(fname, change_cb, events)
 
     if vim.fn.filereadable(fname) == 0 then
         vim.defer_fn(function()
-            watch(fname, change_cb, events)
+            -- if events is nil, default to rename = true to trigger change_cb when the file is readable
+            -- this can happen if the file does not initially exist when coverage.load() is called but is created later
+            local ev = events or { rename = true }
+            watch(fname, change_cb, ev)
         end, config.opts.auto_reload_timeout_ms)
         return
     end
