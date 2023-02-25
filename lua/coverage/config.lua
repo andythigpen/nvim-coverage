@@ -109,6 +109,9 @@ local defaults = {
         cpp = {
             coverage_file = "report.info",
         },
+        c = {
+            coverage_file = "coverage.info",
+        },
     },
 }
 
