@@ -1,9 +1,9 @@
 local M = {}
 
--- Javascript and Typescript currently use the exact same configuration.
+-- CPP and C currently use the exact same configuration.
 local cpp = require("coverage.languages.cpp")
 
---- Use the same configuration as javascript
+--- Use the same configuration as CPP
 M.config_alias = "cpp"
 
 --- Returns a list of signs to be placed.
