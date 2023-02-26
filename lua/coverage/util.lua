@@ -150,4 +150,14 @@ M.lcov_to_table = function(path)
     return M.report_to_table(path, lcov_parser)
 end
 
+--- Parses a cobertura file into a table,
+--- @param path Path
+M.cobertura_to_table = function(path, path_mappings)
+    local cobertura_parser = require("coverage.parsers.corbertura")
+
+    return M.report_to_table(path, function(p, f)
+      return cobertura_parser(p, f, path_mappings or {})
+    end)
+end
+
 return M

@@ -109,6 +109,10 @@ local defaults = {
         cpp = {
             coverage_file = "report.info",
         },
+        php = {
+          coverage_file = "coverage/cobertura.xml",
+          path_mappings = {},
+        }
     },
 }
 
