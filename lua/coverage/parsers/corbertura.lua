@@ -43,6 +43,10 @@ local function enter_next_element_in(name, parent)
         return false
     end
 
+    if reader:is_empty_element() then
+        return false
+    end
+
     enter_current_element()
 
     return true
@@ -115,9 +119,7 @@ local function generate_coverages()
 
         enter_current_element()
         if enter_next_element_in("classes", "package") then
-            -- In case of <classes /> we must stop on </package> at the latest
-            -- Only one "classes" per "package" anyway
-            while enter_next_element_in("class", "package") do
+            while enter_next_element_in("class", "classes") do
                 while enter_next_element_in("lines", "class") do
                     while next_element_in("line", "lines") do
                         update_coverage_with_current_line(coverage)
