@@ -139,6 +139,14 @@ Valid keys for {opts.lang}:
 ================================================================================
 LANGUANGE SPECIFIC SETUP                            *nvim-coverage-lang-setup*
 
+                                                             *nvim-coverage-c*
+                                                           *nvim-coverage-cpp*
+C/C++ supports the following configuration options:
+
+    coverage_file: ~
+        File that the plugin will try to read coverage from.
+        Defaults to: `"report.info"`
+
                                                           *nvim-coverage-dart*
 Dart supports the following configuration options:
 
