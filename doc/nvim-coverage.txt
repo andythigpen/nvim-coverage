@@ -190,6 +190,27 @@ available:
         files.
         Defaults to: `"julia --project=@nvim-coverage -e 'using CoverageTools; LCOV.writefile("lcov.info", process_folder("src"))"`
 
+                                                        *nvim-coverage-php*
+PHP (cobertura) supports the following configuration options:
+
+In order to handle this format the parser requires the `lua-xmlreader` luarock
+package.
+
+    coverage_file: ~
+        File that the plugin will try to read coverage from.
+        Defaults to: `"coverage/cobertura.xml"`
+    path_mappings: ~
+        This allow you to configure how to update the paths retrieved from the
+        coverage.
+        This can be usefull when your tests are run inside a container.
+        For instance if your projet root inside the container is in
+        `/var/www/html` you can define the following mapping to retrieve
+        relative paths from the coverage report: >
+        {
+          ["/var/www/html"] = ""
+        }
+<
+        Defaults to: `{}`
                                                         *nvim-coverage-python*
 Python (coverage.py) supports the following configuration options:
 

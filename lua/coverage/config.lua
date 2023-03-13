@@ -109,6 +109,10 @@ local defaults = {
             project_files_only = true,
             project_files = { "src/*", "tests/*" },
         },
+        php = {
+          coverage_file = "coverage/cobertura.xml",
+          path_mappings = {},
+        }
     },
 }
 
