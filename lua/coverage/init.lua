@@ -6,6 +6,7 @@ local highlight = require("coverage.highlight")
 local summary = require("coverage.summary")
 local report = require("coverage.report")
 local watch = require("coverage.watch")
+local lcov = require("coverage.lcov")
 
 --- Setup the coverage plugin.
 -- Also defines signs, creates highlight groups.
@@ -20,6 +21,7 @@ M.setup = function(user_opts)
         vim.cmd([[
     command! Coverage lua require('coverage').load(true)
     command! CoverageLoad lua require('coverage').load()
+    command! -nargs=? CoverageLoadLcov lua require('coverage').load_lcov(<f-args>)
     command! CoverageShow lua require('coverage').show()
     command! CoverageHide lua require('coverage').hide()
     command! CoverageToggle lua require('coverage').toggle()
@@ -68,6 +70,9 @@ M.load = function(place)
     signs.clear()
     load_lang()
 end
+
+-- Load an lcov file
+M.load_lcov = lcov.load_lcov
 
 -- Shows signs, if loaded.
 M.show = signs.show
