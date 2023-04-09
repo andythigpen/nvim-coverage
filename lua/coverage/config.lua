@@ -114,6 +114,7 @@ local defaults = {
           path_mappings = {},
         }
     },
+    lcov_file = nil,
 }
 
 --- Setup configuration values.
