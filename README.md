@@ -25,6 +25,7 @@ Branch (partial) coverage support:
 | Language              | Supported              |
 | --------------------- | ---------------------- |
 | C/C++                 | :x: |
+| C#                    | :x: (see wiki for details) |
 | Dart                  | :heavy_check_mark: (untested) |
 | Go                    | :x: |
 | Javascript/Typescript | :heavy_check_mark: |
