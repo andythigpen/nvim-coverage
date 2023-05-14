@@ -59,6 +59,9 @@ Valid keys for {opts}:
     sign_group: ~
         Name of the sign group used when placing the signs. See |sign-group|.
         Defaults to: `coverage`
+    lcov_file: ~
+        File that the plugin will try to read lcov coverage from.
+        Defaults to: `nil`
 
                                                          *coverage.highlights*
 Valid keys for {opts.highlights}:
@@ -260,6 +263,11 @@ The following commands are available (when configured):
 :CoverageLoad                                                  *:CoverageLoad*
     Loads a coverage report but does not display the coverage signs.
 
+:CoverageLoadLcov {file}                                   *:CoverageLoadLcov*
+    Loads a coverage report from an lcov file but does not display the coverage
+    signs. If `file` is not specified, the `lcov_file` configuration option is used
+    instead.
+
 :CoverageShow                                                  *:CoverageShow*
     Shows the coverage signs. Must call |:Coverage| or |:CoverageLoad| first.
 
@@ -284,6 +292,12 @@ LUA API                                                    *nvim-coverage-lua*
 coverage.load({place})
     Loads a coverage report. When {place} is true, also place the signs in the
     sign column.
+
+                                                        *coverage.load_lcov()*
+coverage.load_lcov({file}, {place})
+    Loads a coverage report from an lcov file. If `file` is not specified, the
+    `lcov_file` configuration option is used instead. When {place} is true, also
+    place the signs in the sign column.
 
                                                             *coverage.clear()*
 coverage.clear()

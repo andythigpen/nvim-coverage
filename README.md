@@ -19,6 +19,7 @@ Currently supports:
 - Ruby (json): [SimpleCov](https://github.com/simplecov-ruby/simplecov)
 - Rust (json): [grcov](https://github.com/mozilla/grcov#usage)
 - PHP (cobertura)
+- Anything that generates lcov files
 
 Branch (partial) coverage support:
 
