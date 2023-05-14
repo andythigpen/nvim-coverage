@@ -11,6 +11,7 @@ Displays a coverage summary report in a pop-up window.
 Currently supports:
 
 - C/C++ (lcov)
+- C# (lcov - see wiki for details)
 - Dart (lcov)
 - Go (coverprofile)
 - Javascript/Typescript (lcov): [jest](https://jestjs.io/docs/getting-started)
@@ -26,6 +27,7 @@ Branch (partial) coverage support:
 | Language              | Supported              |
 | --------------------- | ---------------------- |
 | C/C++                 | :x: |
+| C#                    | :x: |
 | Dart                  | :heavy_check_mark: (untested) |
 | Go                    | :x: |
 | Javascript/Typescript | :heavy_check_mark: |

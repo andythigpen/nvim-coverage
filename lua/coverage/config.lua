@@ -78,6 +78,9 @@ local defaults = {
         cpp = {
             coverage_file = "report.info",
         },
+        cs = {
+            coverage_file = "TestResults/lcov.info",
+        },
         dart = {
             coverage_file = "coverage/lcov.info",
         },
