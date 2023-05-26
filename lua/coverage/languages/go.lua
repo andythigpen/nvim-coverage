@@ -20,8 +20,8 @@ local line_re = "^(.+):(%d+)%.%d+,(%d+)%.%d+ (%d+) (%d+)$"
 local mod_name_re = "^module (.*)$"
 
 local get_module_name = function()
-    local p = Path:new("go.mod")
-    if not p:exists() then
+    local p = Path:new("."):find_upwards("go.mod")
+    if p == "" then
         return ""
     end
     local lines = p:readlines()
