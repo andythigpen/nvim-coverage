@@ -100,6 +100,9 @@ local defaults = {
             ]] .. "'",
             coverage_file = "lcov.info",
         },
+        lua = {
+            coverage_file = "luacov.report.out",
+        },
         python = {
             coverage_file = ".coverage",
             coverage_command = "coverage json --fail-under=0 -q -o -",
