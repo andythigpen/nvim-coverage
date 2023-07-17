@@ -6,7 +6,7 @@ nvim-coverage is a plugin for displaying test coverage data in neovim.
   1. Setup...............................................|nvim-coverage-setup|
   2. Language specific setup........................|nvim-coverage-lang-setup|
   3. Commands.........................................|nvim-coverage-commands|
-  4. Lua API...............................................|nvim-coverage-lua|
+  4. Lua API...............................................|nvim-coverage-api|
 
 ================================================================================
 SETUP                                                    *nvim-coverage-setup*
@@ -16,7 +16,7 @@ coverage.setup({opts})
     Initial setup function. Must be called by the user to enable the plugin.
 
     Usage: >
-    
+
     require('coverage').setup({
       -- configuration options here
       highlights = {
@@ -47,7 +47,7 @@ Valid keys for {opts}:
         If true, create commands. See |nvim-coverage-commands|.
         Defaults to: `true`
     load_coverage_cb: ~
-        A lua function that will be called when a coverage file is loaded. 
+        A lua function that will be called when a coverage file is loaded.
         Example: >
 
         require("coverage").setup({
@@ -257,7 +257,7 @@ Lua supports the following configuration options:
     coverage_file: ~
         File that the plugin will try to read coverage from.
         Defaults to: `"luacov.report.out"`
-    
+
 
 ================================================================================
 COMMANDS                                              *nvim-coverage-commands*
@@ -293,7 +293,7 @@ The following commands are available (when configured):
 
 
 ================================================================================
-LUA API                                                    *nvim-coverage-lua*
+LUA API                                                    *nvim-coverage-api*
 
                                                              *coverage.load()*
 coverage.load({place})
