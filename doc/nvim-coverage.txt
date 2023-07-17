@@ -6,7 +6,7 @@ nvim-coverage is a plugin for displaying test coverage data in neovim.
   1. Setup...............................................|nvim-coverage-setup|
   2. Language specific setup........................|nvim-coverage-lang-setup|
   3. Commands.........................................|nvim-coverage-commands|
-  4. Lua API...............................................|nvim-coverage-lua|
+  4. Lua API...........................................|nvim-coverage-lua-api|
 
 ================================================================================
 SETUP                                                    *nvim-coverage-setup*
@@ -293,7 +293,7 @@ The following commands are available (when configured):
 
 
 ================================================================================
-LUA API                                                    *nvim-coverage-lua*
+LUA API                                                *nvim-coverage-lua-api*
 
                                                              *coverage.load()*
 coverage.load({place})
