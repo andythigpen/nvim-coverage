@@ -11,7 +11,7 @@ M.summary = common.summary
 
 M.load = function(callback)
     local lua_config = config.opts.lang.lua
-    local p = Path:new(lua_config.coverage_file)
+    local p = Path:new(util.get_coverage_file(lua_config.coverage_file))
     if not p:exists() then
         vim.notify("No coverage file exists.", vim.log.levels.INFO)
     end

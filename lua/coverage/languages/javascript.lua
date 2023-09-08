@@ -15,7 +15,7 @@ M.summary = common.summary
 -- @param callback called with results of the coverage report
 M.load = function(callback)
     local javascript_config = config.opts.lang.javascript
-    local p = Path:new(javascript_config.coverage_file)
+    local p = Path:new(util.get_coverage_file(javascript_config.coverage_file))
     if not p:exists() then
         vim.notify("No coverage file exists.", vim.log.levels.INFO)
         return

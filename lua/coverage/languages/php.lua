@@ -15,7 +15,7 @@ M.summary = common.summary
 -- @param callback called with the results of the coverage report
 M.load = function(callback)
     local php_config = config.opts.lang.php
-    local p = Path:new(php_config.coverage_file)
+    local p = Path:new(util.get_coverage_file(php_config.coverage_file))
     if not p:exists() then
         vim.notify("No coverage file exists.", vim.log.levels.INFO)
         return

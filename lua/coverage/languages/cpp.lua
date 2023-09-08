@@ -15,7 +15,7 @@ M.summary = common.summary
 -- @param callback called with the results of the coverage report
 M.load = function(callback)
     local cpp_config = config.opts.lang.cpp
-    local p = Path:new(cpp_config.coverage_file)
+    local p = Path:new(util.get_coverage_file(cpp_config.coverage_file))
     if not p:exists() then
         vim.notify("No coverage file exists.", vim.log.levels.INFO)
         return
