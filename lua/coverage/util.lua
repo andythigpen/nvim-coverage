@@ -1,4 +1,5 @@
 local M = {}
+local Path = require("plenary.path")
 
 --- Safely decode JSON and call the callback with decoded data.
 -- @param data to decode
@@ -158,6 +159,24 @@ M.cobertura_to_table = function(path, path_mappings)
     return M.report_to_table(path, function(p, f)
       return cobertura_parser(p, f, path_mappings or {})
     end)
+end
+
+--- Get the coverage file
+--- In case the config offers a function, this is called,
+--- if it is a list, it tries all files, till one is found
+--- in case of a single file, just return it.
+M.get_coverage_file = function(file_configuration)
+  if type(file_configuration) == 'function' then
+    return file_configuration()
+  elseif type(file_configuration) == 'table' then
+     for _,v in ipairs(file_configuration) do
+       if Path:new(v):exists() then
+         return v
+       end
+     end
+  else
+    return file_configuration
+  end
 end
 
 return M

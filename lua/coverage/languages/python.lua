@@ -19,7 +19,7 @@ M.summary = common.summary
 -- @param callback called with the results of the coverage report
 M.load = function(callback)
     local python_config = config.opts.lang.python
-    local p = Path:new(python_config.coverage_file)
+    local p = Path:new(util.get_coverage_file(python_config.coverage_file))
     if not p:exists() then
         vim.notify("No coverage data file exists.", vim.log.levels.INFO)
         return

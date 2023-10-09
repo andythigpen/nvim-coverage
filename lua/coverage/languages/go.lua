@@ -86,7 +86,7 @@ end
 --- @param callback function called with the results of the coverage report
 M.load = function(callback)
     local go_config = config.opts.lang.go
-    local p = Path:new(go_config.coverage_file)
+    local p = Path:new(util.get_coverage_file(go_config.coverage_file))
     if not p:exists() then
         vim.notify("No coverage file exists.", vim.log.levels.INFO)
         return

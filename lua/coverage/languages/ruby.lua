@@ -33,7 +33,7 @@ end
 -- @param callback called with the list of signs from the coverage report
 M.load = function(callback)
     local ruby_config = config.opts.lang.ruby
-    local p = Path:new(ruby_config.coverage_file)
+    local p = Path:new(util.get_coverage_file(ruby_config.coverage_file))
     if not p:exists() then
         vim.notify("No coverage file exists.", vim.log.levels.INFO)
         return

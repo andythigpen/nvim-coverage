@@ -46,7 +46,7 @@ M.load = function(callback)
     end
 
     -- Check if the process above resulted in the file as expected
-    local p = Path:new(julia_config.coverage_file)
+    local p = Path:new(util.get_coverage_file(julia_config.coverage_file))
     if not p:exists() then
         vim.notify("No coverage data file exists.", vim.log.levels.INFO)
         return
