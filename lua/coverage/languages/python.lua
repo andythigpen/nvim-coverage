@@ -15,6 +15,10 @@ M.sign_list = common.sign_list
 --- Returns a summary report.
 M.summary = common.summary
 
+M.buffer_is_valid = function(buf_id, buf_name)
+    return 1 == vim.fn.buflisted(buf_id) and buf_name ~= ""
+end
+
 --- Loads a coverage report.
 -- @param callback called with the results of the coverage report
 M.load = function(callback)
@@ -26,6 +30,21 @@ M.load = function(callback)
     end
 
     local cmd = python_config.coverage_command
+    if python_config.only_open_buffers then
+      local includes = {}
+      local buffers = vim.api.nvim_list_bufs()
+      for idx = 1, #buffers do
+        local buf_id = buffers[idx]
+        local buf_name = vim.api.nvim_buf_get_name(buf_id)
+        -- if buffer is listed, then add to the includes list
+        if M.buffer_is_valid(buf_id, buf_name) then
+          table.insert(includes, buf_name)
+        end
+      end
+      if next(includes) ~= nil then
+        cmd = cmd .. " --include=" .. table.concat(includes, ",")
+      end
+    end
     if is_pipenv() then
         cmd = "pipenv run " .. cmd
     end
