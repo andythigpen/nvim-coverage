@@ -142,7 +142,7 @@ Valid keys for {opts.lang}:
 
 
 ================================================================================
-LANGUANGE SPECIFIC SETUP                            *nvim-coverage-lang-setup*
+LANGUAGE SPECIFIC SETUP                            *nvim-coverage-lang-setup*
 
                                                              *nvim-coverage-c*
                                                            *nvim-coverage-cpp*
