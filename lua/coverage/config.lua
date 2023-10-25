@@ -106,6 +106,7 @@ local defaults = {
         python = {
             coverage_file = ".coverage",
             coverage_command = "coverage json --fail-under=0 -q -o -",
+            only_open_buffers = false,
         },
         ruby = {
             coverage_file = "coverage/coverage.json",
