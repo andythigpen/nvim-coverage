@@ -85,6 +85,9 @@ local defaults = {
         dart = {
             coverage_file = "coverage/lcov.info",
         },
+        elixir = {
+            coverage_file = "cover/lcov.info",
+        },
         go = {
             coverage_file = "coverage.out",
         },
