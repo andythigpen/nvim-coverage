@@ -70,6 +70,7 @@ local defaults = {
             bot = "─",
             highlight = "Normal:CoverageSummaryBorder",
         },
+        window = {},
         min_coverage = 80.0,
     },
 

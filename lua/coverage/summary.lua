@@ -386,10 +386,13 @@ M.show = function()
         border_opts.titlehighlight = hl_group
     end
 
+    -- get the window options
+    local win_opts = vim.tbl_deep_extend("force", {}, config.opts.summary.window)
+
     popup = window.percentage_range_window(
         adjust_width_percentage(config.opts.summary.width_percentage),
         config.opts.summary.height_percentage,
-        {},
+        win_opts,
         border_opts
     )
 

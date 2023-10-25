@@ -125,6 +125,8 @@ Valid keys for {opts.summary}:
         Defaults to: `0.50`
     borders: ~
         Customize the borders (see plenary window API)
+    window: ~
+        Customize the window options (see plenary window API)
     min_coverage: ~
         Minimum coverage percentage (0 < value <= 100.0).
         Values below this are highlighted with the fail group, values above
