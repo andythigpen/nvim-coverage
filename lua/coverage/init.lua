@@ -63,7 +63,9 @@ M.load = function(place)
     if lang_config == nil then
         lang_config = config.opts.lang[lang.config_alias]
     end
-    if lang_config ~= nil and lang_config.coverage_file ~= nil then
+
+    -- Automatically watch the coverage file for updates when auto_reload is enabled
+    if config.opts.auto_reload and lang_config ~= nil and lang_config.coverage_file ~= nil then
         watch.start(lang_config.coverage_file, load_lang)
     end
 
