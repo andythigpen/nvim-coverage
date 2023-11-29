@@ -65,7 +65,12 @@ M.load = function(place)
     end
 
     -- Automatically watch the coverage file for updates when auto_reload is enabled
-    if config.opts.auto_reload and lang_config ~= nil and lang_config.coverage_file ~= nil then
+    -- and when the language setup allows it:
+    --  - julia is disabled because the coverage command itself produces the file to be
+    --    watched which leads to an infinite loop (see
+    --    https://github.com/andythigpen/nvim-coverage/issues/41)
+    if config.opts.auto_reload and ftype ~= "julia" and
+       lang_config ~= nil and lang_config.coverage_file ~= nil then
         watch.start(lang_config.coverage_file, load_lang)
     end
 
