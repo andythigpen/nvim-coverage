@@ -36,8 +36,15 @@ local create_highlight_groups = function()
 end
 
 -- Creates default highlight groups.
+local autocmd = nil
 M.setup = function()
     create_highlight_groups()
+    if autocmd == nil then
+        autocmd = vim.api.nvim_create_autocmd("ColorScheme", {
+            desc = "Add nvim-coverage highlights on colorscheme change",
+            callback = create_highlight_groups,
+        })
+    end
 end
 
 return M
