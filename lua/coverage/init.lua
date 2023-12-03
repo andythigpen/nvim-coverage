@@ -27,7 +27,7 @@ M.setup = function(user_opts)
     command! CoverageToggle lua require('coverage').toggle()
     command! CoverageClear lua require('coverage').clear()
     command! CoverageSummary lua require('coverage').summary()
-    ]]   )
+    ]])
     end
 end
 
@@ -65,12 +65,11 @@ M.load = function(place)
     end
 
     -- Automatically watch the coverage file for updates when auto_reload is enabled
-    -- and when the language setup allows it:
-    --  - julia is disabled because the coverage command itself produces the file to be
-    --    watched which leads to an infinite loop (see
-    --    https://github.com/andythigpen/nvim-coverage/issues/41)
-    if config.opts.auto_reload and ftype ~= "julia" and
-       lang_config ~= nil and lang_config.coverage_file ~= nil then
+    -- and when the language setup allows it
+    if config.opts.auto_reload and
+        lang_config ~= nil and
+        lang_config.coverage_file ~= nil and
+        not lang_config.disable_auto_reload then
         watch.start(lang_config.coverage_file, load_lang)
     end
 

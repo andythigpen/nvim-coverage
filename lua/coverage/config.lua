@@ -103,6 +103,10 @@ local defaults = {
                 LCOV.writefile("lcov.info", process_folder("src"))
             ]] .. "'",
             coverage_file = "lcov.info",
+            -- julia is disabled because the coverage command itself produces the file to be
+            -- watched which leads to an infinite loop (see
+            -- https://github.com/andythigpen/nvim-coverage/issues/41)
+            disable_auto_reload = true,
         },
         lua = {
             coverage_file = "luacov.report.out",
@@ -116,13 +120,14 @@ local defaults = {
             coverage_file = "coverage/coverage.json",
         },
         rust = {
-            coverage_command = "grcov ${cwd} -s ${cwd} --binary-path ./target/debug/ -t coveralls --branch --ignore-not-existing --token NO_TOKEN",
+            coverage_command =
+            "grcov ${cwd} -s ${cwd} --binary-path ./target/debug/ -t coveralls --branch --ignore-not-existing --token NO_TOKEN",
             project_files_only = true,
             project_files = { "src/*", "tests/*" },
         },
         php = {
-          coverage_file = "coverage/cobertura.xml",
-          path_mappings = {},
+            coverage_file = "coverage/cobertura.xml",
+            path_mappings = {},
         }
     },
     lcov_file = nil,
