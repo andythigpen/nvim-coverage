@@ -30,6 +30,7 @@ M.load = function(callback)
     end
 
     local cmd = python_config.coverage_command
+    cmd = cmd .. " --data-file=" .. tostring(p)
     if python_config.only_open_buffers then
       local includes = {}
       local buffers = vim.api.nvim_list_bufs()
@@ -48,6 +49,7 @@ M.load = function(callback)
     if is_pipenv() then
         cmd = "pipenv run " .. cmd
     end
+
     local stdout = ""
     local stderr = ""
     vim.fn.jobstart(cmd, {
