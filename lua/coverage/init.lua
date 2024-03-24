@@ -7,6 +7,7 @@ local summary = require("coverage.summary")
 local report = require("coverage.report")
 local watch = require("coverage.watch")
 local lcov = require("coverage.lcov")
+local util = require("coverage.util")
 
 --- Setup the coverage plugin.
 -- Also defines signs, creates highlight groups.
@@ -70,7 +71,8 @@ M.load = function(place)
         lang_config ~= nil and
         lang_config.coverage_file ~= nil and
         not lang_config.disable_auto_reload then
-        watch.start(lang_config.coverage_file, load_lang)
+        local coverage_file = util.get_coverage_file(lang_config.coverage_file)
+        watch.start(coverage_file, load_lang)
     end
 
     signs.clear()
