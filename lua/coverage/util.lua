@@ -32,6 +32,8 @@ M.new_file_meta = function()
             excluded_lines = 0,
             missing_lines = 0,
             num_statements = 0,
+            num_branches = 0,
+            num_partial_branches = 0,
             percent_covered = 0,
         },
         missing_lines = {},

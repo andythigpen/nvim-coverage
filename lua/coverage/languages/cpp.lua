@@ -15,13 +15,20 @@ M.summary = common.summary
 -- @param callback called with the results of the coverage report
 M.load = function(callback)
     local cpp_config = config.opts.lang.cpp
+
     local p = Path:new(util.get_coverage_file(cpp_config.coverage_file))
-    if not p:exists() then
-        vim.notify("No coverage file exists.", vim.log.levels.INFO)
+    if p:exists() then
+        callback(util.lcov_to_table(p))
         return
     end
 
-    callback(util.lcov_to_table(p))
+    local p = Path:new(util.get_coverage_file(cpp_config.xml_coverage_file))
+    if p:exists() then
+        callback(util.cobertura_to_table(p, cpp_config.path_mappings or {}))
+        return
+    end
+
+    vim.notify("No coverage file exists.", vim.log.levels.INFO)
 end
 
 return M
