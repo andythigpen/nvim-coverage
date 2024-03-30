@@ -20,7 +20,7 @@ local line_re = "^(.+):(%d+)%.%d+,(%d+)%.%d+ (%d+) (%d+)$"
 local mod_name_re = "^module (.*)$"
 
 local get_module_name = function()
-    local p = Path:new("."):find_upwards("go.mod")
+    local p = Path:new(vim.fn.expand("%:p")):find_upwards("go.mod")
     if p == "" then
         return ""
     end
