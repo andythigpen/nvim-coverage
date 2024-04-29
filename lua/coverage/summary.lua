@@ -304,6 +304,7 @@ end
 local set_options = function()
     local win_width = vim.api.nvim_win_get_width(popup.win_id)
     vim.api.nvim_buf_set_option(popup.bufnr, "textwidth", win_width)
+    vim.api.nvim_buf_set_option(popup.bufnr, "filetype", "coverage")
     vim.api.nvim_win_set_option(popup.win_id, "cursorline", true)
     vim.api.nvim_win_set_option(
         popup.win_id,
