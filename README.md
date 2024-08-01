@@ -74,6 +74,19 @@ use({
 })
 ```
 
+Using lazyvim:
+```lua
+ {
+    "andythigpen/nvim-coverage",
+    version = "*",
+    config = function()
+      require("coverage").setup({
+        auto_reload = true,
+      })
+    end,
+  },
+```
+
 ## Configuration
 
 See [docs](https://github.com/andythigpen/nvim-coverage/blob/main/doc/nvim-coverage.txt) for more info.
