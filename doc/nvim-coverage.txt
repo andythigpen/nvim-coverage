@@ -29,7 +29,7 @@ coverage.setup({opts})
         -- customize summary pop-up
       },
       lang = {
-        -- customize langauge specific settings
+        -- customize language specific settings
       }
     })
 <
@@ -37,7 +37,7 @@ coverage.setup({opts})
 Valid keys for {opts}:
 
     auto_reload: ~
-        If true, the `coverage_file` for a langauge will be watched for
+        If true, the `coverage_file` for a language will be watched for
         changes after executing |:CoverageLoad| or |coverage.load()|. The file watcher will be
         stopped after executing |:CoverageClear| or |coverage.clear()|.
     auto_reload_timeout_ms: ~
