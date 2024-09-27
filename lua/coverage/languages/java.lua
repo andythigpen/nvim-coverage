@@ -34,15 +34,17 @@ M.load = function(callback)
         totals = {},
     }
 
-    jacoco = jacoco.report
-
     local get_attr_by_type_name = function(tag, type_name)
+        if not tag then
+            return nil
+        end
         for index, value in ipairs(tag) do
             if value._attr.type == type_name then
                 return value._attr
             end
         end
-        error("attribute name not found in tag: " .. tag)
+        return nil
+        -- error(("attribute name %s not found in tag: %s"):format(type_name, vim.inspect(tag)))
     end
 
     local debug = function(obj)
@@ -51,98 +53,97 @@ M.load = function(callback)
         print("--------DEBUG--------------")
     end
 
-    -- obtains the total counters
-    if jacoco.counter then
-        -- Global stats
-        local line = get_attr_by_type_name(jacoco.counter, "LINE")
-        if line then
-            data.totals.line = {
-                covered = tonumber(line.covered),
-                missed = tonumber(line.missed),
-            }
-        end
-
-        local branch = get_attr_by_type_name(jacoco.counter, "BRANCH")
-        if branch then
-            data.totals.branch = {
-                covered = tonumber(branch.covered),
-                missed = tonumber(branch.missed),
-            }
-        end
-
+    local stop = function ()
+        error("test stop")
     end
-    debug(data)
-    error("test stop")
+
+    -- Global stats
+    -- obtains the total counters
+    local counter = assert(jacoco.report.counter, "not able to readjacoco.report.counter")
+
+    local global_lines = get_attr_by_type_name(counter, "LINE")
+    if global_lines then
+        data.totals.line = {
+            covered = tonumber(global_lines.covered),
+            missed = tonumber(global_lines.missed),
+        }
+    end
+
+    local branch = get_attr_by_type_name(counter, "BRANCH")
+    if branch then
+        data.totals.branch = {
+            covered = tonumber(branch.covered),
+            missed = tonumber(branch.missed),
+        }
+    end
 
 
-    -- writing file to inspect separately
-    -- vim.fn.writefile({vim.json.encode(jacoco)}, "/home/rcasia/inspect.json")
-    for tag, item in pairs(jacoco) do
-        -- We only really care about ocunter and package
-        if tag == "package" then
+    --
+    --
+    -- obtains fine grained data
+    local packages = assert(jacoco.report.package, "not able to read jacoco.report.package")
+    assert(type(packages) == "table")
+    for _, pack in ipairs(packages) do
+        local dir = dir_prefix .. pack._attr.name
 
-                    debug(item[1]._attr)
+        -- classes
+        for _, class in ipairs(pack.class) do
+            -- local filename = class._attr.name
+            local filename = dir .. "/" .. class._attr.sourcefilename -- with .java
 
-                error("test stop")
-            -- Where the sourcefiles live
-            --
-            local dir = dir_prefix .. item._attr.name
-            -- Here's where the source file are stored :)
-            for _, srcfile in ipairs(item) do
-                local srcfile = srcfile.sourcefile
-                    debug(dir_prefix)
+            -- set file total counters
+            local file_total_lines = get_attr_by_type_name(class.counter, "LINE")
+            local file_total_branches = get_attr_by_type_name(class.counter, "BRANCH")
+            data.files[filename] = {
+                lines = {},
+                totals = {
+                    line = {
+                        covered = file_total_lines and file_total_lines.covered or 0,
+                        missed = file_total_lines and file_total_lines.missed or 0
+                    },
+                    branch = {
+                        covered = file_total_branches and file_total_branches.covered or  0,
+                        missed = file_total_branches and file_total_branches.missed or 0
+                    },
+                },
+            }
 
-                    local filename = dir .. srcfile.attr.name
-                    data.files[filename] = {
-                        lines = {},
-                        totals = {
-                            line = { covered = 0, missed = 0 },
-                            branch = { covered = 0, missed = 0 },
-                        },
-                    }
-                    -- So, jacoco reports in terms of instructions
-                    -- which is neat, but not uh that useful for this purpose.
-                    -- I'll mark any sort of missing instructions as missed lines,
-                    -- iff no instructions were missed, check if any were covered.
-                    -- Also,, it doesn't really specify if stuff is mutually exclusive or not.
-                    -- The priority will be
-                    --     1. Missed branch
-                    --     2. Missed instruction (as line)
-                    --     3. Covered branch
-                    --     4. Covered instruction (as line)
-                    for _, srcdata in ipairs(srcfile) do
-                        if srcdata.tag == "line" then
-                            local lnr = tonumber(srcdata.attr.nr)
-                            assert(lnr, "bad linenumber")
 
-                            local mb = srcdata.attr.mb ~= "0"
-                            local mi = srcdata.attr.mi ~= "0"
-                            local cb = srcdata.attr.cb ~= "0"
-                            local ci = srcdata.attr.ci ~= "0"
+        end
 
-                            if mb and cb or mi and ci then
-                                data.files[filename].lines[lnr] = "partial"
-                            elseif mb or mi then
-                                data.files[filename].lines[lnr] = "missed"
-                            else
-                                data.files[filename].lines[lnr] = "covered"
-                            end
-                        elseif srcdata.tag == "counter" then
-                            if srcdata.attr.type == "LINE" then
-                                data.files[filename].totals.line = {
-                                    covered = tonumber(srcdata.attr.covered),
-                                    missed = tonumber(srcdata.attr.missed),
-                                }
-                            elseif srcdata.attr.type == "BRANCH" then
-                                data.files[filename].totals.branch = {
-                                    covered = tonumber(srcdata.attr.covered),
-                                    missed = tonumber(srcdata.attr.missed),
-                                }
-                            end
-                        end
+        for _, src_file in ipairs(pack.sourcefile) do
+            local lines = src_file.line
+            -- So, jacoco reports in terms of instructions
+            -- which is neat, but not uh that useful for this purpose.
+            -- I'll mark any sort of missing instructions as missed lines,
+            -- iff no instructions were missed, check if any were covered.
+            -- Also,, it doesn't really specify if stuff is mutually exclusive or not.
+            -- The priority will be
+            --     1. Missed branch
+            --     2. Missed instruction (as line)
+            --     3. Covered branch
+            --     4. Covered instruction (as line)
+            if lines then
+                for _, line in ipairs(lines) do
+                    local line_number = assert(tonumber(line._attr.nr))
+                    local filename = dir .. "/" .. src_file._attr.name
+
+                    local mb = assert(line._attr.mb) ~= "0"
+                    local mi = assert(line._attr.mi) ~= "0"
+                    local cb = assert(line._attr.cb) ~= "0"
+                    local ci = assert(line._attr.ci) ~= "0"
+
+                    if mb and cb or mi and ci then
+                        data.files[filename].lines[line_number] = "partial"
+                    elseif mb or mi then
+                        data.files[filename].lines[line_number] = "missed"
+                    else
+                        data.files[filename].lines[line_number] = "covered"
                     end
                 end
             end
+        end
+
     end
 
     callback(data)

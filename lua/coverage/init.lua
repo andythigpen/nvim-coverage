@@ -38,12 +38,11 @@ end
 M.load = function(place)
     local ftype = vim.bo.filetype
 
-    -- local ok, lang = pcall(require, "coverage.languages.java")
-    -- if not ok then
-    --     vim.notify("Coverage report not available for filetype " .. "coverage.languages." .. ftype)
-    --     return
-    -- end
-    local lang = java_lang
+    local ok, lang = pcall(require, "coverage.languages." .. ftype)
+    if not ok then
+        vim.notify("Coverage report not available for filetype " .. "coverage.languages." .. ftype)
+        return
+    end
 
     local load_lang = function()
         lang.load(function(result)
