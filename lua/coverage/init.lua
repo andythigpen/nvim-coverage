@@ -8,7 +8,6 @@ local report = require("coverage.report")
 local watch = require("coverage.watch")
 local lcov = require("coverage.lcov")
 local util = require("coverage.util")
-local java_lang = require("coverage.languages.java")
 
 --- Setup the coverage plugin.
 -- Also defines signs, creates highlight groups.
@@ -40,7 +39,7 @@ M.load = function(place)
 
     local ok, lang = pcall(require, "coverage.languages." .. ftype)
     if not ok then
-        vim.notify("Coverage report not available for filetype " .. "coverage.languages." .. ftype)
+        vim.notify("Coverage report not available for filetype " .. ftype)
         return
     end
 

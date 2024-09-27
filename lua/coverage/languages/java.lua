@@ -17,7 +17,7 @@ M.load = function(callback)
         return
     end
 
-    local dir_prefix = config.opts.lang.java.dir_prefix .. "/"
+    local dir_prefix = Path:new(config.opts.lang.java.dir_prefix .. "/").filename
 
     -- Parse into object
     local jacoco = lom.parse(table.concat(vim.fn.readfile(p.filename), ""))
@@ -38,23 +38,12 @@ M.load = function(callback)
         if not tag then
             return nil
         end
-        for index, value in ipairs(tag) do
+        for _, value in ipairs(tag) do
             if value._attr.type == type_name then
                 return value._attr
             end
         end
         return nil
-        -- error(("attribute name %s not found in tag: %s"):format(type_name, vim.inspect(tag)))
-    end
-
-    local debug = function(obj)
-        print("--------DEBUG--------------")
-        print(vim.inspect(obj))
-        print("--------DEBUG--------------")
-    end
-
-    local stop = function ()
-        error("test stop")
     end
 
     -- Global stats
@@ -78,8 +67,6 @@ M.load = function(callback)
     end
 
 
-    --
-    --
     -- obtains fine grained data
     local packages = assert(jacoco.report.package, "not able to read jacoco.report.package")
     assert(type(packages) == "table")
@@ -88,8 +75,7 @@ M.load = function(callback)
 
         -- classes
         for _, class in ipairs(pack.class) do
-            -- local filename = class._attr.name
-            local filename = dir .. "/" .. class._attr.sourcefilename -- with .java
+            local filename = Path:new(dir .. "/" .. class._attr.sourcefilename).filename -- with .java
 
             -- set file total counters
             local file_total_lines = get_attr_by_type_name(class.counter, "LINE")
@@ -126,7 +112,7 @@ M.load = function(callback)
             if lines then
                 for _, line in ipairs(lines) do
                     local line_number = assert(tonumber(line._attr.nr))
-                    local filename = dir .. "/" .. src_file._attr.name
+                    local filename = Path:new(dir .. "/" .. src_file._attr.name).filename
 
                     local mb = assert(line._attr.mb) ~= "0"
                     local mi = assert(line._attr.mi) ~= "0"
