@@ -4,7 +4,7 @@ local Path = require "plenary.path"
 local config = require "coverage.config"
 local util = require "coverage.util"
 local cs = require "coverage.signs"
-local lom = require "lxp.lom"
+local lom = require "neotest.lib.xml"
 
 --- Loads a coverage report.
 -- @param callback called with results of the coverage report
@@ -20,7 +20,7 @@ M.load = function(callback)
     local dir_prefix = config.opts.lang.java.dir_prefix .. "/"
 
     -- Parse into object
-    local jacoco = lom.parse(vim.fn.readfile(p.filename))
+    local jacoco = lom.parse(table.concat(vim.fn.readfile(p.filename), ""))
 
     -- Failed to parse, ignore.
     if not jacoco then
@@ -34,29 +34,66 @@ M.load = function(callback)
         totals = {},
     }
 
-    for _, item in ipairs(jacoco) do
-        -- We only really care about ocunter and package
-        if item.tag == "counter" then
-            -- Global stats
-            if item.attr.type == "LINE" then
-                data.totals.line = {
-                    covered = tonumber(item.attr.covered),
-                    missed = tonumber(item.attr.missed),
-                }
-            elseif item.attr.type == "BRANCH" then
-                data.totals.branch = {
-                    covered = tonumber(item.attr.covered),
-                    missed = tonumber(item.attr.missed),
-                }
+    jacoco = jacoco.report
+
+    local get_attr_by_type_name = function(tag, type_name)
+        for index, value in ipairs(tag) do
+            if value._attr.type == type_name then
+                return value._attr
             end
-        elseif item.tag == "package" then
+        end
+        error("attribute name not found in tag: " .. tag)
+    end
+
+    local debug = function(obj)
+        print("--------DEBUG--------------")
+        print(vim.inspect(obj))
+        print("--------DEBUG--------------")
+    end
+
+    -- obtains the total counters
+    if jacoco.counter then
+        -- Global stats
+        local line = get_attr_by_type_name(jacoco.counter, "LINE")
+        if line then
+            data.totals.line = {
+                covered = tonumber(line.covered),
+                missed = tonumber(line.missed),
+            }
+        end
+
+        local branch = get_attr_by_type_name(jacoco.counter, "BRANCH")
+        if branch then
+            data.totals.branch = {
+                covered = tonumber(branch.covered),
+                missed = tonumber(branch.missed),
+            }
+        end
+
+    end
+    debug(data)
+    error("test stop")
+
+
+    -- writing file to inspect separately
+    -- vim.fn.writefile({vim.json.encode(jacoco)}, "/home/rcasia/inspect.json")
+    for tag, item in pairs(jacoco) do
+        -- We only really care about ocunter and package
+        if tag == "package" then
+
+                    debug(item[1]._attr)
+
+                error("test stop")
             -- Where the sourcefiles live
-            local dir = dir_prefix .. item.attr.name .. "/"
+            --
+            local dir = dir_prefix .. item._attr.name
             -- Here's where the source file are stored :)
             for _, srcfile in ipairs(item) do
-                if srcfile.tag == "sourcefile" then
-                    local fn = dir .. srcfile.attr.name
-                    data.files[fn] = {
+                local srcfile = srcfile.sourcefile
+                    debug(dir_prefix)
+
+                    local filename = dir .. srcfile.attr.name
+                    data.files[filename] = {
                         lines = {},
                         totals = {
                             line = { covered = 0, missed = 0 },
@@ -84,20 +121,20 @@ M.load = function(callback)
                             local ci = srcdata.attr.ci ~= "0"
 
                             if mb and cb or mi and ci then
-                                data.files[fn].lines[lnr] = "partial"
+                                data.files[filename].lines[lnr] = "partial"
                             elseif mb or mi then
-                                data.files[fn].lines[lnr] = "missed"
+                                data.files[filename].lines[lnr] = "missed"
                             else
-                                data.files[fn].lines[lnr] = "covered"
+                                data.files[filename].lines[lnr] = "covered"
                             end
                         elseif srcdata.tag == "counter" then
                             if srcdata.attr.type == "LINE" then
-                                data.files[fn].totals.line = {
+                                data.files[filename].totals.line = {
                                     covered = tonumber(srcdata.attr.covered),
                                     missed = tonumber(srcdata.attr.missed),
                                 }
                             elseif srcdata.attr.type == "BRANCH" then
-                                data.files[fn].totals.branch = {
+                                data.files[filename].totals.branch = {
                                     covered = tonumber(srcdata.attr.covered),
                                     missed = tonumber(srcdata.attr.missed),
                                 }
@@ -106,7 +143,6 @@ M.load = function(callback)
                     end
                 end
             end
-        end
     end
 
     callback(data)
