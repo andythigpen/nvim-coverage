@@ -193,7 +193,15 @@ available:
     coverage_command: ~
         Command for creating `"lcov.info"` from individual coverage output
         files.
-        Defaults to: `"julia --project=@nvim-coverage -e 'using CoverageTools; LCOV.writefile("lcov.info", process_folder("src"))"`
+        Defaults to: >
+
+        julia --project=@nvim-coverage - <<EOF
+            !isdir("src") && (print(stderr, "No src directory found."); exit(1))
+            push!(empty!(LOAD_PATH), "@nvim-coverage", "@stdlib")
+            using CoverageTools
+            LCOV.writefile("lcov.info", process_folder("src"))
+        EOF
+<
 
                                                         *nvim-coverage-php*
 PHP (cobertura) supports the following configuration options:

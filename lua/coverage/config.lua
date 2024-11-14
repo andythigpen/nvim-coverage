@@ -96,7 +96,7 @@ local defaults = {
         },
         julia = {
             -- See https://github.com/julia-actions/julia-processcoverage
-            coverage_command = "julia --compile=min -O0 -e '" .. [[
+            coverage_command = "julia -e '" .. [[
                 !isdir("src") && (print(stderr, "No src directory found."); exit(1))
                 push!(empty!(LOAD_PATH), "@nvim-coverage", "@stdlib")
                 using CoverageTools
