@@ -192,21 +192,27 @@ available:
         Defaults to: `"lcov.info"`
     coverage_command: ~
         Command for creating `"lcov.info"` from individual coverage output
-        files. The configured `coverage_file` is passed as the first argument
-        to the command.
+        files. The configured `coverage_file` and `directories` are passed as
+        the first and second argument to the command.
         Defaults to: >
 
         julia --project=@nvim-coverage - <<EOF
             coverage_file = ARGS[1]
+            directories = ARGS[2]
             push!(empty!(LOAD_PATH), "@nvim-coverage", "@stdlib")
             using CoverageTools
             coverage_data = FileCoverage[]
-            if isdir("src")
-                append!(coverage_data, process_folder("src"))
+            for dir in split(directories, ",")
+                isdir(dir) || continue
+                append!(coverage_data, process_folder(dir))
             end
             LCOV.writefile(coverage_file, coverage_data)
         EOF
 <
+    directories: ~
+        Comma separated list of directories in which to search for coverage
+        data to process.
+        Defaults to: `"src,ext"`
 
                                                         *nvim-coverage-php*
 PHP (cobertura) supports the following configuration options:
