@@ -105,6 +105,7 @@ local defaults = {
                 for dir in split(directories, ",")
                     isdir(dir) || continue
                     append!(coverage_data, process_folder(dir))
+                    clean_folder(dir)
                 end
                 LCOV.writefile(coverage_file, coverage_data)
             ]] .. "'",
