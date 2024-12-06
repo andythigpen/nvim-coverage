@@ -3,6 +3,8 @@ local M = {
     opts = {},
 }
 
+local cached_swift_coverage_file = nil
+
 --- @class Configuration
 --- @field auto_reload boolean
 --- @field auto_reload_timeout_ms integer
@@ -124,6 +126,17 @@ local defaults = {
             "grcov ${cwd} -s ${cwd} --binary-path ./target/debug/ -t coveralls --branch --ignore-not-existing --token NO_TOKEN",
             project_files_only = true,
             project_files = { "src/*", "tests/*" },
+        },
+        swift = {
+            coverage_file = function()
+                if cached_swift_coverage_file == nil then
+                    cached_swift_coverage_file = vim.trim(vim.system({ 'swift', 'test', '--show-codecov-path' },
+                            { text = true })
+                        :wait()
+                        .stdout)
+                end
+                return cached_swift_coverage_file
+            end
         },
         php = {
             coverage_file = "coverage/cobertura.xml",

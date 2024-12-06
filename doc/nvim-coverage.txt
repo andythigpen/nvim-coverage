@@ -253,6 +253,13 @@ Rust (grcov) supports the following configuration options:
         `coverage_command`.
         Defaults to: `{ "src/*", "tests/*" }`
 
+                                                          *nvim-coverage-swift*
+Swift supports the following configuration options:
+
+    coverage_file: ~
+        File that the plugin will try to read coverage from.
+        Defaults to: the output of `swift test --show-codecov-path`.
+
                                                            *nvim-coverage-lua*
 Lua supports the following configuration options:
 
