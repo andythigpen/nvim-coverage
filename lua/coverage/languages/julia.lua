@@ -17,8 +17,11 @@ M.load = function(callback)
     local julia_config = config.opts.lang.julia
 
     -- Run the coverage command to construct the lcov.info file
+    local cmd = julia_config.coverage_command
+    cmd = cmd .. " -- " .. julia_config.coverage_file
+    cmd = cmd .. " '" .. julia_config.directories .. "'"
     local stderr = ""
-    local jobid = vim.fn.jobstart(julia_config.coverage_command, {
+    local jobid = vim.fn.jobstart(cmd, {
         on_stderr = vim.schedule_wrap(function(_, data, _)
             for _, line in ipairs(data) do
                 stderr = stderr .. line

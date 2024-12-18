@@ -96,13 +96,21 @@ local defaults = {
         },
         julia = {
             -- See https://github.com/julia-actions/julia-processcoverage
-            coverage_command = "julia --compile=min -O0 -e '" .. [[
-                !isdir("src") && (print(stderr, "No src directory found."); exit(1))
+            coverage_command = "julia -e '" .. [[
+                coverage_file = ARGS[1]
+                directories = ARGS[2]
                 push!(empty!(LOAD_PATH), "@nvim-coverage", "@stdlib")
                 using CoverageTools
-                LCOV.writefile("lcov.info", process_folder("src"))
+                coverage_data = FileCoverage[]
+                for dir in split(directories, ",")
+                    isdir(dir) || continue
+                    append!(coverage_data, process_folder(dir))
+                    clean_folder(dir)
+                end
+                LCOV.writefile(coverage_file, coverage_data)
             ]] .. "'",
             coverage_file = "lcov.info",
+            directories = "src,ext",
             -- julia is disabled because the coverage command itself produces the file to be
             -- watched which leads to an infinite loop (see
             -- https://github.com/andythigpen/nvim-coverage/issues/41)
