@@ -93,6 +93,10 @@ local defaults = {
         go = {
             coverage_file = "coverage.out",
         },
+        java = {
+            coverage_file = "build/reports/jacoco/test/jacocoTestReport.xml",
+            dir_prefix = "src/main/java",
+        },
         javascript = {
             coverage_file = "coverage/lcov.info",
         },
