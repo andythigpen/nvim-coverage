@@ -19,6 +19,7 @@ Currently supports:
 - Python (json): [coverage.py](https://coverage.readthedocs.io/en/6.3.2/index.html)
 - Ruby (json): [SimpleCov](https://github.com/simplecov-ruby/simplecov)
 - Rust (json): [grcov](https://github.com/mozilla/grcov#usage)
+- Swift (json)
 - PHP (cobertura)
 - Lua (lcov)
 - Anything that generates lcov files
@@ -36,6 +37,7 @@ Branch (partial) coverage support:
 | Python                | :heavy_check_mark: |
 | Ruby                  | :x: |
 | Rust                  | :x: |
+| Swift                 | :x: |
 | PHP                   | :x: |
 | Lua                   | :x: |
 
