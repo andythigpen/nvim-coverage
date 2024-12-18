@@ -78,6 +78,8 @@ local defaults = {
     lang = {
         cpp = {
             coverage_file = "report.info",
+            xml_coverage_file = "coverage/cobertura.xml",
+            path_mappings = {},
         },
         cs = {
             coverage_file = "TestResults/lcov.info",
